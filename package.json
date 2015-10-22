@@ -1,26 +1,36 @@
 {
-	"name": "vscode-change-case",
-	"description": "Change Case Extension for Visual Studio Code",
-	"version": "0.0.1",
-	"publisher": "Wayne Maurer",
-	"engines": {
-		"vscode": "*"
-	},
-	"activationEvents": [
-		"command:extension.sayHello"
-	],
-	"main": "./out/extension",
-	"contributes": {
-		"commands": [{
-			"command": "extension.sayHello",
-			"title": "Hello World"
-		}]
-	},
-	"scripts": {
-		"vscode:prepublish": "node ./node_modules/vscode/bin/compile",
-		"compile": "node ./node_modules/vscode/bin/compile -watch -p ./"
-	},
-	"devDependencies": {
-		"vscode": "*"
-	}
+  "name": "vscode-change-case",
+  "description": "Change Case Extension for Visual Studio Code",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/wmaurer/vscode-change-case.git"
+  },
+  "license": "MIT",
+  "version": "0.0.1",
+  "publisher": "Wayne Maurer",
+  "engines": {
+    "vscode": "*"
+  },
+  "activationEvents": [
+    "command:extension.sayHello"
+  ],
+  "main": "./out/extension",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.sayHello",
+        "title": "Hello World"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
+    "compile": "node ./node_modules/vscode/bin/compile -watch -p ./"
+  },
+  "devDependencies": {
+    "vscode": "*"
+  },
+  "dependencies": {
+    "change-case": "^2.3.0"
+  }
 }
