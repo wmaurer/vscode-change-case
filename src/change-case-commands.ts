@@ -3,20 +3,20 @@ import * as changeCase from 'change-case';
 var uniq = require('lodash.uniq');
 
 export const COMMAND_LABELS = {
-	camel: "camel",
-	constant: "constant",
-	dot: "dot",
-	lower: "lower",
-	lowerFirst: "lowerFirst",
-	param: "param",
-	pascal: "pascal",
-	path: "path",
-	sentence: "sentence",
-	snake: "snake",
-	swap: "swap",
-	title: "title",
-	upper: "upper",
-	upperFirst: "upperFirst"
+	camel: 'camel',
+	constant: 'constant',
+	dot: 'dot',
+	lower: 'lower',
+	lowerFirst: 'lowerFirst',
+	param: 'param',
+	pascal: 'pascal',
+	path: 'path',
+	sentence: 'sentence',
+	snake: 'snake',
+	swap: 'swap',
+	title: 'title',
+	upper: 'upper',
+	upperFirst: 'upperFirst'
 };
 
 const COMMAND_DEFINITIONS = [
@@ -87,8 +87,7 @@ export function runCommand(commandLabel: string) {
 
 	// now execute all the promises, i.e. all the edits
 	Promise.all(editPromises).then(newSelections => {
-		newSelections = newSelections
-			.sort((a, b) => compareByEndPosition(a.range, b.range));
+		newSelections = newSelections.sort((a, b) => compareByEndPosition(a.range, b.range));
 
 		// in order to maintain the selections based on possible new replacement lengths, calculate the new
 		// range coordinates, taking into account possible edits earlier in the line
