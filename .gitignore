@@ -1,2 +1,5 @@
+logs
+*.log
+
 out
 node_modules
