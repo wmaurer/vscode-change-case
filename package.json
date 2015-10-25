@@ -1,5 +1,5 @@
 {
-  "name": "vscode-change-case",
+  "name": "change-case",
   "description": "Change Case Extension for Visual Studio Code",
   "repository": {
     "type": "git",
