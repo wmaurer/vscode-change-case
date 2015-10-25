@@ -3,7 +3,7 @@ import { changeCaseCommands, runCommand, COMMAND_LABELS } from './change-case-co
 
 export function activate() {
 
-	console.log('Extension \'vscode-change-case\' is now active.');
+	console.log('Extension \'vscode-change-case\' is now active');
 
 	commands.registerCommand('extension.changeCase.commands', changeCaseCommands);
 	commands.registerCommand('extension.changeCase.camel', () => { runCommand(COMMAND_LABELS.camel) } );

@@ -117,9 +117,7 @@ function getSelectedTextIfOnlyOneSelection(): string {
 
 	if (selections.length > 1) return undefined;
 
-	const selection = selections[0];
-
-	return getSelectedText(selection, document).text;
+	return getSelectedText(selections[0], document).text;
 }
 
 function getSelectedText(selection: vscode.Selection, document: vscode.TextDocument): { text: string, range: vscode.Range } {

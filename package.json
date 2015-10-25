@@ -5,15 +5,16 @@
     "type": "git",
     "url": "https://github.com/wmaurer/vscode-change-case.git"
   },
+  "bugs": {
+    "url": "https://github.com/wmaurer/vscode-change-case/issues"
+  },
   "license": "MIT",
   "version": "0.1.0",
-  "publisher": "Wayne Maurer",
+  "publisher": "wmaurer",
   "engines": {
     "vscode": "*"
   },
-  "activationEvents": [
-    "command:extension.sayHello"
-  ],
+  "activationEvents": [],
   "main": "./out/extension",
   "contributes": {
     "commands": [
@@ -80,7 +81,7 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
+    "vscode:prepublish": "tsc",
     "compile": "node ./node_modules/vscode/bin/compile -watch -p ./"
   },
   "devDependencies": {
