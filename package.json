@@ -1,94 +1,113 @@
 {
-  "name": "change-case",
-  "description": "Change Case Extension for Visual Studio Code",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/wmaurer/vscode-change-case.git"
-  },
-  "bugs": {
-    "url": "https://github.com/wmaurer/vscode-change-case/issues"
-  },
-  "license": "MIT",
-  "version": "0.1.0",
-  "publisher": "wmaurer",
-  "engines": {
-    "vscode": "*"
-  },
-  "activationEvents": [],
-  "main": "./out/extension",
-  "contributes": {
-    "commands": [
-      {
-        "command": "extension.changeCase.commands",
-        "title": "Change Case Commands"
-      },
-      {
-        "command": "extension.changeCase.camel",
-        "title": "Change Case 'camel': Convert to a string with the separators denoted by having the next letter capitalised"
-      },
-      {
-        "command": "extension.changeCase.constant",
-        "title": "Change Case 'constant': Convert to an upper case, underscore separated string"
-      },
-      {
-        "command": "extension.changeCase.dot",
-        "title": "Change Case 'dot': Convert to a lower case, period separated string"
-      },
-      {
-        "command": "extension.changeCase.lower",
-        "title": "Change Case 'lower': Convert to a string in lower case"
-      },
-      {
-        "command": "extension.changeCase.lowerFirst",
-        "title": "Change Case 'lowerFirst': Convert to a string with the first character lower cased"
-      },
-      {
-        "command": "extension.changeCase.param",
-        "title": "Change Case 'param': Convert to a lower case, dash separated string"
-      },
-      {
-        "command": "extension.changeCase.pascal",
-        "title": "Change Case 'pascal': Convert to a string denoted in the same fashion as camelCase, but with the first letter also capitalised"
-      },
-      {
-        "command": "extension.changeCase.path",
-        "title": "Change Case 'path': Convert to a lower case, slash separated string"
-      },
-      {
-        "command": "extension.changeCase.sentence",
-        "title": "Change Case 'sentence': Convert to a lower case, space separated string"
-      },
-      {
-        "command": "extension.changeCase.snake",
-        "title": "Change Case 'snake': Convert to a lower case, underscore separated string"
-      },
-      {
-        "command": "extension.changeCase.swap",
-        "title": "Change Case 'swap': Convert to a string with every character case reversed"
-      },
-      {
-        "command": "extension.changeCase.title",
-        "title": "Change Case 'title': Convert to a space separated string with the first character of every word upper cased"
-      },
-      {
-        "command": "extension.changeCase.upper",
-        "title": "Change Case 'upper': Convert to a string in upper case"
-      },
-      {
-        "command": "extension.changeCase.upperFirst",
-        "title": "Change Case 'upperFirst': Convert to a string with the first character upper cased"
-      }
-    ]
-  },
-  "scripts": {
-    "vscode:prepublish": "tsc",
-    "compile": "node ./node_modules/vscode/bin/compile -watch -p ./"
-  },
-  "devDependencies": {
-    "vscode": "*"
-  },
-  "dependencies": {
-    "change-case": "^2.3.0",
-    "lodash.uniq": "^3.2.2"
-  }
+	"name": "change-case",
+	"description": "Change Case Extension for Visual Studio Code",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/wmaurer/vscode-change-case.git"
+	},
+	"bugs": {
+		"url": "https://github.com/wmaurer/vscode-change-case/issues"
+	},
+	"license": "MIT",
+	"version": "0.2.0",
+	"publisher": "wmaurer",
+	"engines": {
+		"vscode": "^0.10.0"
+	},
+	"categories": [
+		"Others"
+	],
+	"activationEvents": [
+		"onCommand:extension.changeCase.commands",
+		"onCommand:extension.changeCase.camel",
+		"onCommand:extension.changeCase.constant",
+		"onCommand:extension.changeCase.dot",
+		"onCommand:extension.changeCase.lower",
+		"onCommand:extension.changeCase.lowerFirst",
+		"onCommand:extension.changeCase.param",
+		"onCommand:extension.changeCase.pascal",
+		"onCommand:extension.changeCase.path",
+		"onCommand:extension.changeCase.sentence",
+		"onCommand:extension.changeCase.snake",
+		"onCommand:extension.changeCase.swap",
+		"onCommand:extension.changeCase.title",
+		"onCommand:extension.changeCase.upper",
+		"onCommand:extension.changeCase.upperFirst"
+	],
+	"main": "./out/extension",
+	"contributes": {
+		"commands": [
+			{
+				"command": "extension.changeCase.commands",
+				"title": "Change Case Commands"
+			},
+			{
+				"command": "extension.changeCase.camel",
+				"title": "Change Case 'camel': Convert to a string with the separators denoted by having the next letter capitalised"
+			},
+			{
+				"command": "extension.changeCase.constant",
+				"title": "Change Case 'constant': Convert to an upper case, underscore separated string"
+			},
+			{
+				"command": "extension.changeCase.dot",
+				"title": "Change Case 'dot': Convert to a lower case, period separated string"
+			},
+			{
+				"command": "extension.changeCase.lower",
+				"title": "Change Case 'lower': Convert to a string in lower case"
+			},
+			{
+				"command": "extension.changeCase.lowerFirst",
+				"title": "Change Case 'lowerFirst': Convert to a string with the first character lower cased"
+			},
+			{
+				"command": "extension.changeCase.param",
+				"title": "Change Case 'param': Convert to a lower case, dash separated string"
+			},
+			{
+				"command": "extension.changeCase.pascal",
+				"title": "Change Case 'pascal': Convert to a string denoted in the same fashion as camelCase, but with the first letter also capitalised"
+			},
+			{
+				"command": "extension.changeCase.path",
+				"title": "Change Case 'path': Convert to a lower case, slash separated string"
+			},
+			{
+				"command": "extension.changeCase.sentence",
+				"title": "Change Case 'sentence': Convert to a lower case, space separated string"
+			},
+			{
+				"command": "extension.changeCase.snake",
+				"title": "Change Case 'snake': Convert to a lower case, underscore separated string"
+			},
+			{
+				"command": "extension.changeCase.swap",
+				"title": "Change Case 'swap': Convert to a string with every character case reversed"
+			},
+			{
+				"command": "extension.changeCase.title",
+				"title": "Change Case 'title': Convert to a space separated string with the first character of every word upper cased"
+			},
+			{
+				"command": "extension.changeCase.upper",
+				"title": "Change Case 'upper': Convert to a string in upper case"
+			},
+			{
+				"command": "extension.changeCase.upperFirst",
+				"title": "Change Case 'upperFirst': Convert to a string with the first character upper cased"
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "node ./node_modules/vscode/bin/compile",
+		"compile": "node ./node_modules/vscode/bin/compile -watch -p ./"
+	},
+	"devDependencies": {
+		"vscode": "0.10.x"
+	},
+	"dependencies": {
+		"change-case": "^2.3.0",
+		"lodash.uniq": "^3.2.2"
+	}
 }

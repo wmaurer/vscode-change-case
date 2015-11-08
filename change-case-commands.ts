@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as changeCase from 'change-case';
-var uniq = require('lodash.uniq');
+const uniq = require('lodash.uniq');
 
 export const COMMAND_LABELS = {
 	camel: 'camel',
@@ -55,65 +55,63 @@ export function runCommand(commandLabel: string) {
 	const commandDefinition = COMMAND_DEFINITIONS.filter(c => c.label === commandLabel)[0];
 	if (!commandDefinition) return;
 
-	const editor = vscode.window.getActiveTextEditor();
-	const document = editor.getTextDocument();
-	const selections = editor.getSelections();
+	const editor = vscode.window.activeTextEditor;
+	const { document, selections } = editor;
 
-	// create a collection of promises
-	const editPromises = selections
-		.sort(compareByEndPosition)
-		.reverse()
-		.map(selection => {
+	let replacementActions = [];
+
+	editor.edit(editBuilder => {
+		replacementActions = selections.map(selection => {
 			const { text, range } = getSelectedText(selection, document);
 			const replacement = commandDefinition.func(text);
 
-			return editor.edit(editBuilder => {
-				// perform edit if necessary
-				if (replacement !== text) {
-					editBuilder.replace(range, replacement);
-				}
-			}).then(() => {
-				// it's possible that the replacement string is shorter or longer than the original,
-				// so calculate the offsets and new selection coordinates appropriately
-				const offset = replacement.length - text.length;
-				return {
-					offset,
-					range: isRangeSimplyCursorPosition(range)
-						? range
-						: new vscode.Range(range.start.line, range.start.character, range.end.line, range.end.character + offset)
-				};
-			});
-	});
+			// it's possible that the replacement string is shorter or longer than the original,
+			// so calculate the offsets and new selection coordinates appropriately
+			const offset = replacement.length - text.length;
 
-	// now execute all the promises, i.e. all the edits
-	Promise.all(editPromises).then(newSelections => {
-		newSelections = newSelections.sort((a, b) => compareByEndPosition(a.range, b.range));
+			return {
+				text,
+				range,
+				replacement,
+				offset,
+				newRange: isRangeSimplyCursorPosition(range)
+					? range
+					: new vscode.Range(range.start.line, range.start.character, range.end.line, range.end.character + offset)
+			};
+		});
+
+		replacementActions
+			.filter(x => x.replacement !== x.text)
+			.forEach(x => {
+				editBuilder.replace(x.range, x.replacement);
+			});
+
+	}).then(() => {
+		const sortedActions = replacementActions.sort((a, b) => compareByEndPosition(a.newRange, b.newRange));
 
 		// in order to maintain the selections based on possible new replacement lengths, calculate the new
 		// range coordinates, taking into account possible edits earlier in the line
-
-		const lineRunningOffsets = uniq(newSelections.map(s => s.range.end.line))
+		const lineRunningOffsets = uniq(sortedActions.map(s => s.range.end.line))
 			.map(lineNumber => ({ lineNumber, runningOffset: 0 }));
 
-		const adjustedSelectionCoordinateList = newSelections.map(s => {
+		const adjustedSelectionCoordinateList = sortedActions.map(s => {
 			const lineRunningOffset = lineRunningOffsets.filter(lro => lro.lineNumber === s.range.end.line)[0];
-			var range = new vscode.Range(
-				s.range.start.line, s.range.start.character +lineRunningOffsets.filter(lro => lro.lineNumber === s.range.start.line)[0].runningOffset,
-				s.range.end.line, s.range.end.character + lineRunningOffset.runningOffset
+			const range = new vscode.Range(
+				s.newRange.start.line, s.newRange.start.character + lineRunningOffsets.filter(lro => lro.lineNumber === s.newRange.start.line)[0].runningOffset,
+				s.newRange.end.line, s.newRange.end.character + lineRunningOffset.runningOffset
 			);
 			lineRunningOffset.runningOffset += s.offset;
 			return range;
 		});
 
 		// now finally set the newly created selections
-		editor.setSelections(adjustedSelectionCoordinateList.map(r => toSelection(r)));
+		editor.selections = adjustedSelectionCoordinateList.map(r => toSelection(r));
 	});
 }
 
 function getSelectedTextIfOnlyOneSelection(): string {
-	const editor = vscode.window.getActiveTextEditor();
-	const document = editor.getTextDocument();
-	const selections = editor.getSelections();
+	const editor = vscode.window.activeTextEditor;
+	const { document, selections } = editor;
 
 	if (selections.length > 1) return undefined;
 
@@ -130,7 +128,7 @@ function getSelectedText(selection: vscode.Selection, document: vscode.TextDocum
 	}
 
 	return {
-		text: document.getTextInRange(range),
+		text: document.getText(range),
 		range
 	};
 }
@@ -146,21 +144,21 @@ function getChangeCaseWordRangeAtPosition(document: vscode.TextDocument, positio
 			range.start.line, startCharacterIndex,
 			range.start.line, startCharacterIndex + 1
 		);
-		const character = document.getTextInRange(charRange);
+		const character = document.getText(charRange);
 		if (character.search(CHANGE_CASE_WORD_CHARACTER_REGEX) === -1) { // no match
 			break;
 		}
 		startCharacterIndex--;
 	}
 
-	const lineMaxColumn = document.getLineMaxColumn(range.end.line);
+	const lineMaxColumn = document.lineAt(range.end.line).range.end.character;
 	let endCharacterIndex = range.end.character;
 	while (endCharacterIndex <= lineMaxColumn) {
 		const charRange = new vscode.Range(
 			range.end.line, endCharacterIndex,
 			range.end.line, endCharacterIndex + 1
 		);
-		const character = document.getTextInRange(charRange);
+		const character = document.getText(charRange);
 		if (character.search(CHANGE_CASE_WORD_CHARACTER_REGEX) === -1) { // no match
 			break;
 		}
