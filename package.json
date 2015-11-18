@@ -1,6 +1,7 @@
 {
 	"name": "change-case",
 	"description": "Change Case Extension for Visual Studio Code",
+	"icon": "images/change-case-icon.png",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/wmaurer/vscode-change-case.git"
@@ -9,7 +10,7 @@
 		"url": "https://github.com/wmaurer/vscode-change-case/issues"
 	},
 	"license": "MIT",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"publisher": "wmaurer",
 	"engines": {
 		"vscode": "^0.10.0"
