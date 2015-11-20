@@ -4,9 +4,11 @@ A wrapper around [node-change-case](https://github.com/blakeembrey/node-change-c
 Quickly change the case of the current selection or current word.
 
 If only one word is selected, the `extension.changeCase.commands` command gives you a preview of each option:
+
 ![change-case-preview](https://cloud.githubusercontent.com/assets/2899448/10712456/3c5e29b6-7a9c-11e5-9ce4-7eb944889696.gif)
 
 `change-case` also works with multiple cursors:
+
 ![change-case-multi](https://cloud.githubusercontent.com/assets/2899448/10712454/1a9019e8-7a9c-11e5-8f06-91fd2d7e21bf.gif)
 
 ## Install

@@ -1,7 +1,11 @@
 {
 	"name": "change-case",
-	"description": "Change Case Extension for Visual Studio Code",
+	"description": "Quickly change the case (camelCase, CONSTANT_CASE, snake_case, etc) of the current selection or current word",
 	"icon": "images/change-case-icon.png",
+	"galleryBanner" : {
+		"color": "#1e1e1e",
+		"theme" : "dark"
+	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/wmaurer/vscode-change-case.git"
@@ -10,7 +14,7 @@
 		"url": "https://github.com/wmaurer/vscode-change-case/issues"
 	},
 	"license": "MIT",
-	"version": "0.2.1",
+	"version": "0.2.3",
 	"publisher": "wmaurer",
 	"engines": {
 		"vscode": "^0.10.0"
