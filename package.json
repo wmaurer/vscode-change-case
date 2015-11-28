@@ -14,7 +14,7 @@
 		"url": "https://github.com/wmaurer/vscode-change-case/issues"
 	},
 	"license": "MIT",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"publisher": "wmaurer",
 	"engines": {
 		"vscode": "^0.10.0"
