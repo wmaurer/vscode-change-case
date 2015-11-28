@@ -37,6 +37,10 @@ const COMMAND_DEFINITIONS = [
 ];
 
 export function changeCaseCommands() {
+	if (!checkIfSelectionsAreValid()) {
+		return;
+	}
+
 	const firstSelectedText = getSelectedTextIfOnlyOneSelection();
 	const opts: vscode.QuickPickOptions = { matchOnDescription: true, placeHolder: 'What do you want to do to the current word / selection(s)?' };
 
@@ -52,6 +56,10 @@ export function changeCaseCommands() {
 }
 
 export function runCommand(commandLabel: string) {
+	if (!checkIfSelectionsAreValid()) {
+		return;
+	}
+
 	const commandDefinition = COMMAND_DEFINITIONS.filter(c => c.label === commandLabel)[0];
 	if (!commandDefinition) return;
 
@@ -107,6 +115,18 @@ export function runCommand(commandLabel: string) {
 		// now finally set the newly created selections
 		editor.selections = adjustedSelectionCoordinateList.map(r => toSelection(r));
 	});
+}
+
+function checkIfSelectionsAreValid(): boolean {
+	const editor = vscode.window.activeTextEditor;
+	const { selections } = editor;
+
+	if (selections.map(s => s.start.line !== s.end.line).filter(b => b).length > 0) {
+		vscode.window.showInformationMessage(`The change-case extension does not support selections that span lines. Please see the README for details.`);
+		return false;
+	}
+
+	return true;
 }
 
 function getSelectedTextIfOnlyOneSelection(): string {
