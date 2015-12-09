@@ -148,7 +148,7 @@ function getSelectedText(selection: vscode.Selection, document: vscode.TextDocum
 	}
 
 	return {
-		text: document.getText(range),
+		text: range ? document.getText(range) : undefined,
 		range
 	};
 }
@@ -158,6 +158,8 @@ const CHANGE_CASE_WORD_CHARACTER_REGEX = /([\w_\.\-\/$]+)/;
 // Change Case has a special definition of a word: it can contain special characters like dots, dashes and slashes
 function getChangeCaseWordRangeAtPosition(document: vscode.TextDocument, position: vscode.Position) {
 	const range = document.getWordRangeAtPosition(position);
+	if (!range) return undefined;
+
 	let startCharacterIndex = range.start.character - 1;
 	while (startCharacterIndex >= 1) {
 		const charRange = new vscode.Range(
