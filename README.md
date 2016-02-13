@@ -3,7 +3,7 @@
 A wrapper around [node-change-case](https://github.com/blakeembrey/node-change-case) for Visual Studio Code.
 Quickly change the case of the current selection or current word.
 
-*Current version: 0.3.1*. Please update to the latest version via the `Extensions: Install Extension` dropdown.
+*Current version: 0.4.1*. Please update to the latest version via the `Extensions: Install Extension` dropdown.
 
 If only one word is selected, the `extension.changeCase.commands` command gives you a preview of each option:
 
