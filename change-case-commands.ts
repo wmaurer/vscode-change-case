@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
+import { EOL } from 'os';
 import * as changeCase from 'change-case';
-const uniq = require('lodash.uniq');
+const lodashUniq = require('lodash.uniq');
+const lodashRange = require('lodash.range');
 
 export const COMMAND_LABELS = {
     camel: 'camel',
@@ -37,10 +39,6 @@ const COMMAND_DEFINITIONS = [
 ];
 
 export function changeCaseCommands() {
-    if (!checkIfSelectionsAreValid()) {
-        return;
-    }
-
     const firstSelectedText = getSelectedTextIfOnlyOneSelection();
     const opts: vscode.QuickPickOptions = { matchOnDescription: true, placeHolder: 'What do you want to do to the current word / selection(s)?' };
 
@@ -56,10 +54,6 @@ export function changeCaseCommands() {
 }
 
 export function runCommand(commandLabel: string) {
-    if (!checkIfSelectionsAreValid()) {
-        return;
-    }
-
     const commandDefinition = COMMAND_DEFINITIONS.filter(c => c.label === commandLabel)[0];
     if (!commandDefinition) return;
 
@@ -71,11 +65,24 @@ export function runCommand(commandLabel: string) {
     editor.edit(editBuilder => {
         replacementActions = selections.map(selection => {
             const { text, range } = getSelectedText(selection, document);
-            const replacement = commandDefinition.func(text);
 
-            // it's possible that the replacement string is shorter or longer than the original,
-            // so calculate the offsets and new selection coordinates appropriately
-            const offset = replacement.length - text.length;
+            let replacement;
+            let offset;
+
+            if (selection.isSingleLine) {
+                replacement = commandDefinition.func(text);
+
+                // it's possible that the replacement string is shorter or longer than the original,
+                // so calculate the offsets and new selection coordinates appropriately
+                offset = replacement.length - text.length;
+            } else {
+                const lineRange = lodashRange(selection.start.line, selection.end.line + 1) as number[];
+                const lines = lineRange.map(lineNumber => document.getText(document.lineAt(lineNumber).range));
+
+                const replacementLines = lines.map(x => commandDefinition.func(x));
+                replacement = replacementLines.reduce((acc, v) => (!acc ? '' : acc + EOL) + v, undefined);
+                offset = replacementLines[replacementLines.length - 1].length - lines[lines.length - 1].length;
+            }
 
             return {
                 text,
@@ -99,13 +106,13 @@ export function runCommand(commandLabel: string) {
 
         // in order to maintain the selections based on possible new replacement lengths, calculate the new
         // range coordinates, taking into account possible edits earlier in the line
-        const lineRunningOffsets = uniq(sortedActions.map(s => s.range.end.line))
+        const lineRunningOffsets = lodashUniq(sortedActions.map(s => s.range.end.line))
             .map(lineNumber => ({ lineNumber, runningOffset: 0 }));
 
         const adjustedSelectionCoordinateList = sortedActions.map(s => {
             const lineRunningOffset = lineRunningOffsets.filter(lro => lro.lineNumber === s.range.end.line)[0];
             const range = new vscode.Range(
-                s.newRange.start.line, s.newRange.start.character + lineRunningOffsets.filter(lro => lro.lineNumber === s.newRange.start.line)[0].runningOffset,
+                s.newRange.start.line, s.newRange.start.character + lineRunningOffset.runningOffset,
                 s.newRange.end.line, s.newRange.end.character + lineRunningOffset.runningOffset
             );
             lineRunningOffset.runningOffset += s.offset;
@@ -117,23 +124,12 @@ export function runCommand(commandLabel: string) {
     });
 }
 
-function checkIfSelectionsAreValid(): boolean {
-    const editor = vscode.window.activeTextEditor;
-    const { selections } = editor;
-
-    if (selections.map(s => s.start.line !== s.end.line).filter(b => b).length > 0) {
-        vscode.window.showInformationMessage(`The change-case extension does not support selections that span lines. Please see the README for details.`);
-        return false;
-    }
-
-    return true;
-}
-
 function getSelectedTextIfOnlyOneSelection(): string {
     const editor = vscode.window.activeTextEditor;
-    const { document, selections } = editor;
+    const { document, selection, selections } = editor;
 
-    if (selections.length > 1) return undefined;
+    // check if there's only one selection or if the selection spans multiple lines
+    if (selections.length > 1 || selection.start.line !== selection.end.line) return undefined;
 
     return getSelectedText(selections[0], document).text;
 }
