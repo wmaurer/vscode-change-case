@@ -48,59 +48,59 @@
       },
       {
         "command": "extension.changeCase.camel",
-        "title": "Change Case camel: Convert to a string with the separators denoted by having the next letter capitalised"
+        "title": "Change Case camel"
       },
       {
         "command": "extension.changeCase.constant",
-        "title": "Change Case constant: Convert to an upper case, underscore separated string"
+        "title": "Change Case constant"
       },
       {
         "command": "extension.changeCase.dot",
-        "title": "Change Case dot: Convert to a lower case, period separated string"
+        "title": "Change Case dot"
       },
       {
         "command": "extension.changeCase.lower",
-        "title": "Change Case lower: Convert to a string in lower case"
+        "title": "Change Case lower"
       },
       {
         "command": "extension.changeCase.lowerFirst",
-        "title": "Change Case lowerFirst: Convert to a string with the first character lower cased"
+        "title": "Change Case lowerFirst"
       },
       {
         "command": "extension.changeCase.param",
-        "title": "Change Case param: Convert to a lower case, dash separated string"
+        "title": "Change Case param"
       },
       {
         "command": "extension.changeCase.pascal",
-        "title": "Change Case pascal: Convert to a string denoted in the same fashion as camelCase, but with the first letter also capitalised"
+        "title": "Change Case pascal"
       },
       {
         "command": "extension.changeCase.path",
-        "title": "Change Case path: Convert to a lower case, slash separated string"
+        "title": "Change Case path"
       },
       {
         "command": "extension.changeCase.sentence",
-        "title": "Change Case sentence: Convert to a lower case, space separated string"
+        "title": "Change Case sentence"
       },
       {
         "command": "extension.changeCase.snake",
-        "title": "Change Case snake: Convert to a lower case, underscore separated string"
+        "title": "Change Case snake"
       },
       {
         "command": "extension.changeCase.swap",
-        "title": "Change Case swap: Convert to a string with every character case reversed"
+        "title": "Change Case swap"
       },
       {
         "command": "extension.changeCase.title",
-        "title": "Change Case title: Convert to a space separated string with the first character of every word upper cased"
+        "title": "Change Case title"
       },
       {
         "command": "extension.changeCase.upper",
-        "title": "Change Case upper: Convert to a string in upper case"
+        "title": "Change Case upper"
       },
       {
         "command": "extension.changeCase.upperFirst",
-        "title": "Change Case upperFirst: Convert to a string with the first character upper cased"
+        "title": "Change Case upperFirst"
       }
     ]
   },
@@ -113,6 +113,7 @@
   },
   "dependencies": {
     "change-case": "^2.3.0",
+    "lodash.range": "^3.1.1",
     "lodash.uniq": "^4.1.0"
   }
 }
