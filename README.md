@@ -17,7 +17,7 @@ If only one word is selected, the `extension.changeCase.commands` command gives 
 
 ## Install
 
-`Ctrl/Cmd+P` in Visual Studio Code, then:
+`F1` in Visual Studio Code, then:
 
 ```
 ext install change-case
