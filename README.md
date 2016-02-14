@@ -13,7 +13,7 @@ If only one word is selected, the `extension.changeCase.commands` command gives 
 
 ![change-case-multi](https://cloud.githubusercontent.com/assets/2899448/10712454/1a9019e8-7a9c-11e5-8f06-91fd2d7e21bf.gif)
 
-*Note:* Please read the [documentation](https://code.visualstudio.com/Docs/editor/editingevolved) on how to use multiple cursors in Visual Studio Code. The change-code extension does not currently support selections which span multiple lines - see the discussion [here](https://github.com/wmaurer/vscode-change-case/issues/1).
+*Note:* Please read the [documentation](https://code.visualstudio.com/Docs/editor/editingevolved) on how to use multiple cursors in Visual Studio Code.
 
 ## Install
 
