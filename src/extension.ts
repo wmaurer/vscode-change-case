@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import { changeCaseCommands, runCommand, COMMAND_LABELS } from './change-case-commands';
 
-export function activate() {
+export function activate(context: vscode.ExtensionContext) {
+
 
     console.log('Extension \'vscode-change-case\' is now active');
 
