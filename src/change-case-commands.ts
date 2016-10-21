@@ -80,8 +80,7 @@ export function runCommand(commandLabel: string) {
                 // so calculate the offsets and new selection coordinates appropriately
                 offset = replacement.length - text.length;
             } else {
-                const lineRange = lodashRange(selection.start.line, selection.end.line + 1) as number[];
-                const lines = lineRange.map(lineNumber => document.getText(document.lineAt(lineNumber).range));
+                const lines = document.getText(range).split(EOL);
 
                 const replacementLines = lines.map(x => commandDefinition.func(x));
                 replacement = replacementLines.reduce((acc, v) => (!acc ? '' : acc + EOL) + v, undefined);
