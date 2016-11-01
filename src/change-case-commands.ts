@@ -158,7 +158,7 @@ const CHANGE_CASE_WORD_CHARACTER_REGEX_WITHOUT_DOT = /([\w_\-\/$]+)/;
 
 // Change Case has a special definition of a word: it can contain special characters like dots, dashes and slashes
 function getChangeCaseWordRangeAtPosition(document: vscode.TextDocument, position: vscode.Position) {
-    const configuration = vscode.workspace.getConfiguration('change-case')
+    const configuration = vscode.workspace.getConfiguration('changeCase')
     const includeDotInCurrentWord = configuration ? configuration.get('includeDotInCurrentWord', false) : false;
     const regex = includeDotInCurrentWord
         ? CHANGE_CASE_WORD_CHARACTER_REGEX
@@ -167,8 +167,6 @@ function getChangeCaseWordRangeAtPosition(document: vscode.TextDocument, positio
     const range = document.getWordRangeAtPosition(position);
     if (!range) return undefined;
 
-    console.log('getChangeCaseWordRangeAtPosition', range, document.getText(range));
-
     let startCharacterIndex = range.start.character - 1;
     while (startCharacterIndex >= 0) {
         const charRange = new vscode.Range(
@@ -176,7 +174,6 @@ function getChangeCaseWordRangeAtPosition(document: vscode.TextDocument, positio
             range.start.line, startCharacterIndex + 1
         );
         const character = document.getText(charRange);
-        console.log('looking at char', character, charRange);
         if (character.search(regex) === -1) { // no match
             break;
         }
