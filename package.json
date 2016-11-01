@@ -27,8 +27,10 @@
     "onCommand:extension.changeCase.camel",
     "onCommand:extension.changeCase.constant",
     "onCommand:extension.changeCase.dot",
+    "onCommand:extension.changeCase.kebab",
     "onCommand:extension.changeCase.lower",
     "onCommand:extension.changeCase.lowerFirst",
+    "onCommand:extension.changeCase.no",
     "onCommand:extension.changeCase.param",
     "onCommand:extension.changeCase.pascal",
     "onCommand:extension.changeCase.path",
@@ -59,12 +61,20 @@
         "title": "Change Case dot"
       },
       {
+        "command": "extension.changeCase.kebab",
+        "title": "Change Case kebab"
+      },
+      {
         "command": "extension.changeCase.lower",
         "title": "Change Case lower"
       },
       {
         "command": "extension.changeCase.lowerFirst",
         "title": "Change Case lowerFirst"
+      },
+      {
+        "command": "extension.changeCase.no",
+        "title": "Change Case no"
       },
       {
         "command": "extension.changeCase.param",
