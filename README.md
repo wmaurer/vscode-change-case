@@ -3,8 +3,6 @@
 A wrapper around [node-change-case](https://github.com/blakeembrey/node-change-case) for Visual Studio Code.
 Quickly change the case of the current selection or current word.
 
-*Current version: 0.4.1*. Please update to the latest version via the `Extensions: Install Extension` dropdown.
-
 If only one word is selected, the `extension.changeCase.commands` command gives you a preview of each option:
 
 ![change-case-preview](https://cloud.githubusercontent.com/assets/2899448/10712456/3c5e29b6-7a9c-11e5-9ce4-7eb944889696.gif)
@@ -17,8 +15,7 @@ If only one word is selected, the `extension.changeCase.commands` command gives 
 
 ## Install
 
-Press `Ctrl/Cmd+P` in Visual Studio Code, then:
-
+Launch VS Code Quick Open (Ctrl/Cmd+P), paste the following command, and press enter.
 ```
 ext install change-case
 ```
@@ -29,8 +26,10 @@ ext install change-case
 * `extension.changeCase.camel`: Change Case 'camel': Convert to a string with the separators denoted by having the next letter capitalised
 * `extension.changeCase.constant`: Change Case 'constant': Convert to an upper case, underscore separated string
 * `extension.changeCase.dot`: Change Case 'dot': Convert to a lower case, period separated string
+* `extension.changeCase.kebab`: Change Case 'kebab': Convert to a lower case, dash separated string (alias for param case)
 * `extension.changeCase.lower`: Change Case 'lower': Convert to a string in lower case
 * `extension.changeCase.lowerFirst`: Change Case 'lowerFirst': Convert to a string with the first character lower cased
+* `extension.changeCase.no`: Convert the string without any casing (lower case, space separated)
 * `extension.changeCase.param`: Change Case 'param': Convert to a lower case, dash separated string
 * `extension.changeCase.pascal`: Change Case 'pascal': Convert to a string denoted in the same fashion as camelCase, but with the first letter also capitalised
 * `extension.changeCase.path`: Change Case 'path': Convert to a lower case, slash separated string
