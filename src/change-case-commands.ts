@@ -147,7 +147,7 @@ function getSelectedText(selection: vscode.Selection, document: vscode.TextDocum
     }
 
     return {
-        text: range ? document.getText(range) : undefined,
+        text: range ? document.getText(range) : '',
         range
     };
 }
@@ -164,7 +164,9 @@ function getChangeCaseWordRangeAtPosition(document: vscode.TextDocument, positio
         : CHANGE_CASE_WORD_CHARACTER_REGEX_WITHOUT_DOT;
 
     const range = document.getWordRangeAtPosition(position);
-    if (!range) return undefined;
+
+    // If can't locate return a collapsed range (#13).
+    if (!range) return new vscode.Range(position, position);
 
     let startCharacterIndex = range.start.character - 1;
     while (startCharacterIndex >= 0) {
