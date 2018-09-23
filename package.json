@@ -43,77 +43,106 @@
   ],
   "main": "./out/src/extension",
   "contributes": {
-    "commands": [
-      {
-        "command": "extension.changeCase.commands",
-        "title": "Change Case Commands"
-      },
-      {
-        "command": "extension.changeCase.camel",
-        "title": "Change Case camel"
-      },
-      {
-        "command": "extension.changeCase.constant",
-        "title": "Change Case constant"
-      },
-      {
-        "command": "extension.changeCase.dot",
-        "title": "Change Case dot"
-      },
-      {
-        "command": "extension.changeCase.kebab",
-        "title": "Change Case kebab"
-      },
-      {
-        "command": "extension.changeCase.lower",
-        "title": "Change Case lower"
-      },
-      {
-        "command": "extension.changeCase.lowerFirst",
-        "title": "Change Case lowerFirst"
-      },
-      {
-        "command": "extension.changeCase.no",
-        "title": "Change Case no"
-      },
-      {
-        "command": "extension.changeCase.param",
-        "title": "Change Case param"
-      },
-      {
-        "command": "extension.changeCase.pascal",
-        "title": "Change Case pascal"
-      },
-      {
-        "command": "extension.changeCase.path",
-        "title": "Change Case path"
-      },
-      {
-        "command": "extension.changeCase.sentence",
-        "title": "Change Case sentence"
-      },
-      {
-        "command": "extension.changeCase.snake",
-        "title": "Change Case snake"
-      },
-      {
-        "command": "extension.changeCase.swap",
-        "title": "Change Case swap"
-      },
-      {
-        "command": "extension.changeCase.title",
-        "title": "Change Case title"
-      },
-      {
-        "command": "extension.changeCase.upper",
-        "title": "Change Case upper"
-      },
-      {
-        "command": "extension.changeCase.upperFirst",
-        "title": "Change Case upperFirst"
-      }
-    ]
-  },
+    		"commands": [
+			{
+				"command": "extension.changeCase.commands",
+				"title": "Change Case Commands"
+			},
+			{
+				"command": "extension.changeCase.camel",
+				"title": "Change Case to camelCase"
+			},
+			{
+				"command": "extension.changeCase.constant",
+				"title": "Change Case to CONSTANT_CASE"
+			},
+			{
+				"command": "extension.changeCase.dot",
+				"title": "Change Case to dot.case"
+			},
+			{
+				"command": "extension.changeCase.kebab",
+				"title": "Change Case to kebab-case"
+			},
+			{
+				"command": "extension.changeCase.lower",
+				"title": "Change Case to lowercase"
+			},
+			{
+				"command": "extension.changeCase.lowerFirst",
+				"title": "Change Case to lOWERCASE"
+			},
+			{
+				"command": "extension.changeCase.no",
+				"title": "Change Case to no case"
+			},
+			{
+				"command": "extension.changeCase.param",
+				"title": "Change Case to param-case"
+			},
+			{
+				"command": "extension.changeCase.pascal",
+				"title": "Change Case to PascalCase"
+			},
+			{
+				"command": "extension.changeCase.path",
+				"title": "Change Case to path/case"
+			},
+			{
+				"command": "extension.changeCase.sentence",
+				"title": "Change Case to Sentence case"
+			},
+			{
+				"command": "extension.changeCase.snake",
+				"title": "Change Case to snake_case"
+			},
+			{
+				"command": "extension.changeCase.swap",
+				"title": "Change case from sWAPcASE to SwapCase"
+			},
+			{
+				"command": "extension.changeCase.title",
+				"title": "Change Case to Title Case"
+			},
+			{
+				"command": "extension.changeCase.upper",
+				"title": "Change Case to UPPERCASE"
+			},
+			{
+				"command": "extension.changeCase.upperFirst",
+				"title": "Change Case to Uppercase"
+			}
+		],
+		"menus": {
+			"editor/context": [
+				{
+					"command": "extension.changeCase.lower",
+					"when": "editorHasSelection",
+					"group": "ChangeCase"
+				},
+				{
+					"command": "extension.changeCase.camel",
+					"when": "editorHasSelection",
+					"group": "ChangeCase"
+				},
+				{
+					"command": "extension.changeCase.pascal",
+					"when": "editorHasSelection",
+					"group": "ChangeCase"
+				},
+				{
+					"command": "extension.changeCase.kebab",
+					"when": "editorHasSelection",
+					"group": "ChangeCase"
+				},
+				{
+					"command": "extension.changeCase.commands",
+					"when": "editorHasSelection",
+					"group": "ChangeCase"
+				}
+			]
+		}
+	},
   "configuration": {
     "type": "object",
     "title": "changeCase configuration",
