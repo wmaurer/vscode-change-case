@@ -21,7 +21,7 @@ export const COMMAND_LABELS = {
     title: 'title',
     upper: 'upper',
     upperFirst: 'upperFirst',
-    spongeBob: 'spongeBob',
+    SPoNgeBoB: 'SPoNgeBoB',
 };
 
 const COMMAND_DEFINITIONS = [
@@ -42,7 +42,8 @@ const COMMAND_DEFINITIONS = [
     { label: COMMAND_LABELS.upper, description: 'Convert to a string in upper case', func: changeCase.upper },
     { label: COMMAND_LABELS.upperFirst, description: 'Convert to a string with the first character upper cased', func: changeCase.ucFirst },
     {
-        label: COMMAND_LABELS.spongeBob, description: 'Convert to a string with some random letters upper cased', func: (s: string) => {
+        label: COMMAND_LABELS.SPoNgeBoB, description: 'Convert to a string with some random letters upper cased', func: (s: string) => {
+            // attribution: https://codegolf.stackexchange.com/a/122785/45196
             return s.replace(/[a-z]/gi, c => c[`to${((s as any) = !s) ? 'Low' : 'Upp'}erCase`]())
         }
     }
