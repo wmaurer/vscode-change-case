@@ -19,4 +19,5 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('extension.changeCase.title', () => { runCommand(COMMAND_LABELS.title) } );
     vscode.commands.registerCommand('extension.changeCase.upper', () => { runCommand(COMMAND_LABELS.upper) } );
     vscode.commands.registerCommand('extension.changeCase.upperFirst', () => { runCommand(COMMAND_LABELS.upperFirst) } );
+    vscode.commands.registerCommand('extension.changeCase.SPoNgeBoB', () => { runCommand(COMMAND_LABELS.SPoNgeBoB) } );
 }

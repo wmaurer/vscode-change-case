@@ -14,7 +14,7 @@
     "url": "https://github.com/wmaurer/vscode-change-case/issues"
   },
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "wmaurer",
   "engines": {
     "vscode": "^1.6.0"
@@ -39,7 +39,8 @@
     "onCommand:extension.changeCase.swap",
     "onCommand:extension.changeCase.title",
     "onCommand:extension.changeCase.upper",
-    "onCommand:extension.changeCase.upperFirst"
+    "onCommand:extension.changeCase.upperFirst",
+    "onCommand:extension.changeCase.SPoNgeBoB"
   ],
   "main": "./out/src/extension",
   "contributes": {
@@ -111,6 +112,10 @@
       {
         "command": "extension.changeCase.upperFirst",
         "title": "Change Case upperFirst"
+      },
+      {
+        "command": "extension.changeCase.SPoNgeBoB",
+        "title": "Change Case SPoNgeBoB"
       }
     ]
   },
