@@ -112,6 +112,104 @@
         "command": "extension.changeCase.upperFirst",
         "title": "Change Case upperFirst"
       }
+    ],
+    "keybindings": [
+      {
+        "command": "onCommand:extension.changeCase.camel",
+        "key": "ctrl+shift+z+c",
+        "mac": "cmd+c+z+c",
+        "when": "editorHasSelection"
+      },
+      {
+        "command": "onCommand:extension.changeCase.constant",
+        "key": "ctrl+shift+z+c+o",
+        "mac": "cmd+shift+z+c+o",
+        "when": "editorHasSelection"
+      },
+      {
+        "command": "onCommand:extension.changeCase.dot",
+        "key": "ctrl+shift+z+d",
+        "mac": "cmd+shift+z+d",
+        "when": "editorHasSelection"
+      },
+      {
+        "command": "extension.changeCase.kebab",
+        "key": "ctrl+shift+z+k",
+        "mac": "cmd+shift+z+k",
+        "when": "editorHasSelection"
+      },
+      {
+        "command": "onCommand:extension.changeCase.lower",
+        "key": "ctrl+shift+z+l",
+        "mac": "cmd+shift+z+l",
+        "when": "editorHasSelection"
+      },
+      {
+        "command": "onCommand:extension.changeCase.lowerFirst",
+        "key": "ctrl+shift+z+l+f",
+        "mac": "cmd+shift+z+l+f",
+        "when": "editorHasSelection"
+      },
+      {
+        "command": "onCommand:extension.changeCase.no",
+        "key": "ctrl+shift+z+n",
+        "mac": "cmd+shift+z+n",
+        "when": "editorHasSelection"
+      },
+      {
+        "command": "onCommand:extension.changeCase.param",
+        "key": "ctrl+shift+z+p",
+        "mac": "cmd+shift+z+p",
+        "when": "editorHasSelection"
+      },
+      {
+        "command": "onCommand:extension.changeCase.pascal",
+        "key": "ctrl+shift+z+p+s",
+        "mac": "cmd+shift+z+p+s",
+        "when": "editorHasSelection"
+      },
+      {
+        "command": "onCommand:extension.changeCase.path",
+        "key": "ctrl+shift+z+p+t",
+        "mac": "cmd+shift+z+p+t",
+        "when": "editorHasSelection"
+      },
+      {
+        "command": "onCommand:extension.changeCase.sentence",
+        "key": "ctrl+shift+z+s+n",
+        "mac": "cmd+shift+z+s+n",
+        "when": "editorHasSelection"
+      },
+      {
+        "command": "onCommand:extension.changeCase.snake",
+        "key": "ctrl+shift+z+s",
+        "mac": "cmd+shift+z+s",
+        "when": "editorHasSelection"
+      },
+      {
+        "command": "onCommand:extension.changeCase.swap",
+        "key": "ctrl+shift+z+s+w",
+        "mac": "cmd+shift+z+s+w",
+        "when": "editorHasSelection"
+      },
+      {
+        "command": "onCommand:extension.changeCase.title",
+        "key": "ctrl+shift+z+t",
+        "mac": "cmd+shift+z+t",
+        "when": "editorHasSelection"
+      },
+      {
+        "command": "onCommand:extension.changeCase.upper",
+        "key": "ctrl+shift+z+u",
+        "mac": "cmd+shift+z+u",
+        "when": "editorHasSelection"
+      },
+      {
+        "command": "onCommand:extension.changeCase.upperFirst",
+        "key": "ctrl+shift+z+u+f",
+        "mac": "cmd+shift+z+u+f",
+        "when": "editorHasSelection"
+      }
     ]
   },
   "configuration": {
