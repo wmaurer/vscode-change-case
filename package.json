@@ -134,7 +134,7 @@
     "@types/node": "^6.0.46",
     "@types/vscode": "^1.14.0",
     "mocha": "^2.3.3",
-    "typescript": "^2.0.6"
+    "typescript": "^3.9.10"
   },
   "dependencies": {
     "change-case": "^3.0.0",
