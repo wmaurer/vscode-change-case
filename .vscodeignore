@@ -6,3 +6,6 @@ test/**
 **/*.map
 .gitignore
 tsconfig.json
+
+# Build Output
+*.vsix

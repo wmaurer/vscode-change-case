@@ -3,3 +3,6 @@ logs
 
 out
 node_modules
+
+# Build Output
+*.vsix
