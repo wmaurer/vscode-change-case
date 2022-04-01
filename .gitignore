@@ -3,3 +3,9 @@ logs
 
 out
 node_modules
+
+# Unit Test Files
+.vscode-test/
+
+# Build Output
+*.vsix

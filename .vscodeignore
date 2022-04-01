@@ -6,3 +6,9 @@ test/**
 **/*.map
 .gitignore
 tsconfig.json
+
+# Unit Test Files
+.vscode-test/
+
+# Build Output
+*.vsix
