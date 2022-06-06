@@ -15,10 +15,13 @@ If only one word is selected, the `extension.changeCase.commands` command gives 
 
 ## Install
 
-Launch VS Code Quick Open (Ctrl/Cmd+P), paste the following command, and press enter.
+Launch VS Code Quick Open (<kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>P</kbd>), paste the following command, and press enter.
+
 ```
 ext install change-case
 ```
+
+You can also visit the [VS Code homepage of the extension](https://marketplace.visualstudio.com/items?itemName=wmaurer.change-case) and click on "Install" there.
 
 ## Commands
 
