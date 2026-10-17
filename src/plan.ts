@@ -16,10 +16,12 @@ export interface Edit {
     readonly text: string;
 }
 
-/** What one command does to a document: the edits to apply together, then the selections to set afterwards. */
+/** What one command does to a document: the edits to apply together, then the selections to set afterwards.
+ *  `converted` holds the converted spans, in offsets of the document after the edits. */
 export interface Plan {
     readonly edits: ReadonlyArray<Edit>;
     readonly selections: ReadonlyArray<OffsetSelection>;
+    readonly converted: ReadonlyArray<Target>;
 }
 
 // A Change Case word is wider than an editor word: it keeps `$`, `_`, `-` and `/`, and dots
@@ -68,7 +70,8 @@ export const convertText = (text: string, convert: (text: string) => string): st
         .map((part, index) => (index % 2 === 1 ? part : convertLine(part, convert)))
         .join("");
 
-interface Target {
+/** A span that a command converts, and whether the selection it came from was made backwards. */
+export interface Target {
     readonly span: Span;
     readonly reversed: boolean;
 }
@@ -90,7 +93,8 @@ const mergeOverlapping = (targets: ReadonlyArray<Target>): ReadonlyArray<Target>
             return [...merged.slice(0, -1), { span: union, reversed: previous.reversed }];
         }, []);
 
-const mergedTargets = (
+/** The spans that a command converts for `selections`, in document order and without overlaps. */
+export const targetsOf = (
     text: string,
     selections: ReadonlyArray<OffsetSelection>,
     includeDot: boolean,
@@ -110,31 +114,47 @@ export interface PlanOptions {
     readonly selectConverted: boolean;
 }
 
-/** Plan how `convert`, applied to each line, changes `text` at each of `selections`.
+/** Plan how replacing the text of each of `targets` with the text at the same index of `replacements`
+ *  changes `text`. A target with no replacement keeps its text.
  *
  *  After the edits, each converted span is selected in the direction of the selection it came from,
- *  or the cursor is at its end. A cursor that touches no word gets no edit and stays where it is. */
+ *  or the cursor is at its end when `selectConverted` is `false`. */
+export const planReplace = (
+    text: string,
+    targets: ReadonlyArray<Target>,
+    replacements: ReadonlyArray<string>,
+    selectConverted: boolean,
+): Plan => {
+    const edits: Array<Edit> = [];
+    const selections: Array<OffsetSelection> = [];
+    const converted: Array<Target> = [];
+    // Each edit moves the text after it by the change in length, so later spans shift by the sum so far.
+    let shift = 0;
+    for (const [index, { span, reversed }] of targets.entries()) {
+        const original = text.slice(span.start, span.end);
+        const replacement = replacements[index] ?? original;
+        const start = span.start + shift;
+        const end = start + replacement.length;
+        if (replacement !== original) edits.push({ span, text: replacement });
+        if (!selectConverted) selections.push({ anchor: end, active: end });
+        else selections.push(reversed ? { anchor: end, active: start } : { anchor: start, active: end });
+        converted.push({ span: { start, end }, reversed });
+        shift += replacement.length - original.length;
+    }
+    return { edits, selections, converted };
+};
+
+/** Plan how `convert`, applied to each line, changes `text` at each of `selections`.
+ *  A cursor that touches no word gets no edit and stays where it is. */
 export const planChange = (
     text: string,
     selections: ReadonlyArray<OffsetSelection>,
     convert: (text: string) => string,
     options: PlanOptions,
 ): Plan => {
-    const edits: Array<Edit> = [];
-    const newSelections: Array<OffsetSelection> = [];
-    // Each edit moves the text after it by the change in length, so later spans shift by the sum so far.
-    let shift = 0;
-    for (const { span, reversed } of mergedTargets(text, selections, options.includeDot)) {
-        const original = text.slice(span.start, span.end);
-        const replacement = convertText(original, convert);
-        const start = span.start + shift;
-        const end = start + replacement.length;
-        if (replacement !== original) edits.push({ span, text: replacement });
-        if (!options.selectConverted) newSelections.push({ anchor: end, active: end });
-        else newSelections.push(reversed ? { anchor: end, active: start } : { anchor: start, active: end });
-        shift += replacement.length - original.length;
-    }
-    return { edits, selections: newSelections };
+    const targets = targetsOf(text, selections, options.includeDot);
+    const replacements = targets.map(({ span }) => convertText(text.slice(span.start, span.end), convert));
+    return planReplace(text, targets, replacements, options.selectConverted);
 };
 
 /** The converted text at each of `selections`, in document order. Cursors that touch no word give nothing. */
@@ -144,6 +164,6 @@ export const convertedTexts = (
     convert: (text: string) => string,
     includeDot: boolean,
 ): ReadonlyArray<string> =>
-    mergedTargets(text, selections, includeDot)
+    targetsOf(text, selections, includeDot)
         .filter(({ span }) => span.start < span.end)
         .map(({ span }) => convertText(text.slice(span.start, span.end), convert));

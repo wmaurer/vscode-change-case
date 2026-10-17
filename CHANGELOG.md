@@ -1,5 +1,13 @@
 # Change Log
 
+## 2.1.0 - 2026-10-17
+
+### Added
+
+- `Change Case: Rename Symbol As...` asks for a case, and renames the symbol at the cursor through the language's rename, as F2 does. Every reference is updated, also in other files, and the files are saved as after F2. A keybinding can pass the name of a command, for example `"args": "camel"` ([#17](https://github.com/wmaurer/vscode-change-case/issues/17)).
+- `Change Case: Cycle` converts to the next case in the new `changeCase.cycle` setting, so one key goes through camel, snake, constant, pascal and kebab, and then back to the original text. With several cursors, all of them get the same case ([#15](https://github.com/wmaurer/vscode-change-case/issues/15), [#19](https://github.com/wmaurer/vscode-change-case/issues/19)).
+- A link to the Marketplace in the readme ([#44](https://github.com/wmaurer/vscode-change-case/pull/44)).
+
 ## 2.0.0 - 2026-10-17
 
 ### Added

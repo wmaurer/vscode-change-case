@@ -1,4 +1,7 @@
 import * as assert from "node:assert/strict";
+import { mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 
 import * as vscode from "vscode";
@@ -51,6 +54,35 @@ const runFromPalette = async (title: string, document: vscode.TextDocument): Pro
     }
     await vscode.commands.executeCommand("workbench.action.closeQuickOpen");
     return document.getText();
+};
+
+// Stands in for a language server whose only symbol is `foo_bar`, so the symbol name differs from
+// the editor word in `foo_bar_x`. It renames the symbol in every open document.
+const symbol = "foo_bar";
+const symbolRenamer: vscode.RenameProvider = {
+    prepareRename: (document, position) => {
+        const line = document.lineAt(position.line).text;
+        const start = line.lastIndexOf(symbol, position.character);
+        if (start === -1 || position.character > start + symbol.length) throw new Error("No symbol here.");
+        return {
+            range: new vscode.Range(position.line, start, position.line, start + symbol.length),
+            placeholder: symbol,
+        };
+    },
+    provideRenameEdits: (_document, _position, newName) => {
+        const edit = new vscode.WorkspaceEdit();
+        for (const document of vscode.workspace.textDocuments) {
+            const text = document.getText();
+            for (let index = text.indexOf(symbol); index !== -1; index = text.indexOf(symbol, index + symbol.length)) {
+                edit.replace(
+                    document.uri,
+                    new vscode.Range(document.positionAt(index), document.positionAt(index + symbol.length)),
+                    newName,
+                );
+            }
+        }
+        return edit;
+    },
 };
 
 const run = async (
@@ -237,6 +269,90 @@ suite("Change Case in the editor", () => {
         } finally {
             await configuration.update("separateNumbers", undefined, vscode.ConfigurationTarget.Global);
             await configuration.update("mergeAmbiguousCharacters", undefined, vscode.ConfigurationTarget.Global);
+        }
+    });
+
+    test("cycle converts the word at the cursor to the next case each time it runs", async () => {
+        const editor = await openEditor("fooBar = 1", [[2, 2]]);
+        const texts = [];
+        for (let step = 0; step < 3; step += 1) {
+            await vscode.commands.executeCommand("extension.changeCase.cycle");
+            texts.push(editor.document.getText());
+        }
+        assert.deepEqual(texts, ["foo_bar = 1", "FOO_BAR = 1", "FooBar = 1"]);
+    });
+
+    test("cycle converts from the text before the first press, and comes back to it", async () => {
+        const editor = await openEditor("i18n = 1", [[1, 1]]);
+        const texts = [];
+        for (let step = 0; step < 3; step += 1) {
+            await vscode.commands.executeCommand("extension.changeCase.cycle");
+            texts.push(editor.document.getText());
+        }
+        assert.deepEqual(texts, ["I18N = 1", "I18n = 1", "i18n = 1"]);
+    });
+
+    test("cycle puts the text at every cursor in the same case", async () => {
+        assert.deepEqual(
+            await run("cycle", "fooBar foo_bar", [
+                [2, 2],
+                [9, 9],
+            ]),
+            { text: "fooBar fooBar", selections: ["0-6", "7-13"] },
+        );
+    });
+
+    test("cycle continues when changeCase.selectConvertedText is off", async () => {
+        const configuration = vscode.workspace.getConfiguration("changeCase");
+        await configuration.update("selectConvertedText", false, vscode.ConfigurationTarget.Global);
+        try {
+            const editor = await openEditor("i18n = 1", [[1, 1]]);
+            await vscode.commands.executeCommand("extension.changeCase.cycle");
+            await vscode.commands.executeCommand("extension.changeCase.cycle");
+            assert.deepEqual(describe(editor), { text: "I18n = 1", selections: ["4-4"] });
+        } finally {
+            await configuration.update("selectConvertedText", undefined, vscode.ConfigurationTarget.Global);
+        }
+    });
+
+    test("cycle starts again from the text as it is when the cursor has moved", async () => {
+        const editor = await openEditor("fooBar bazQux", [[2, 2]]);
+        await vscode.commands.executeCommand("extension.changeCase.cycle");
+        editor.selections = [new vscode.Selection(0, 10, 0, 10)];
+        await vscode.commands.executeCommand("extension.changeCase.cycle");
+        assert.equal(editor.document.getText(), "foo_bar baz_qux");
+    });
+
+    test("cycle goes through the cases in changeCase.cycle", async () => {
+        const configuration = vscode.workspace.getConfiguration("changeCase");
+        await configuration.update("cycle", ["upper", "lower"], vscode.ConfigurationTarget.Global);
+        try {
+            assert.equal((await run("cycle", "foo bar", [[0, 7]])).text, "FOO BAR");
+            assert.equal((await run("cycle", "FOO BAR", [[0, 7]])).text, "foo bar");
+        } finally {
+            await configuration.update("cycle", undefined, vscode.ConfigurationTarget.Global);
+        }
+    });
+
+    test("rename converts the language's symbol name and saves every file the rename changed", async () => {
+        const folder = await mkdtemp(join(tmpdir(), "change-case-"));
+        const [a, b] = [join(folder, "a.txt"), join(folder, "b.txt")];
+        await writeFile(a, "foo_bar_x = 1\n");
+        await writeFile(b, "print(foo_bar_x)\n");
+        await vscode.workspace.openTextDocument(b);
+        const document = await vscode.workspace.openTextDocument(a);
+        const editor = await vscode.window.showTextDocument(document);
+        editor.selection = new vscode.Selection(0, 2, 0, 2);
+        const provider = vscode.languages.registerRenameProvider({ scheme: "file" }, symbolRenamer);
+        try {
+            await vscode.commands.executeCommand("extension.changeCase.rename", "camel");
+            for (let attempt = 0; attempt < 50 && document.isDirty; attempt += 1) await sleep(100);
+            assert.deepEqual(
+                [await readFile(a, "utf8"), await readFile(b, "utf8")],
+                ["fooBar_x = 1\n", "print(fooBar_x)\n"],
+            );
+        } finally {
+            provider.dispose();
         }
     });
 

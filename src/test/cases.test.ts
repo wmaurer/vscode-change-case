@@ -70,10 +70,12 @@ suite("case commands", () => {
         assert.equal(convert("snake", "firstName1", { split: splitSeparateNumbers }), "first_name_1");
     });
 
-    test("package.json contributes one command per case, plus the quick pick and copy commands", () => {
+    test("package.json contributes one command per case, plus the quick pick, copy, rename and cycle commands", () => {
         const expected = [
             "extension.changeCase.commands",
             "extension.changeCase.copy",
+            "extension.changeCase.rename",
+            "extension.changeCase.cycle",
             ...caseCommands.map((command) => `extension.changeCase.${command.name}`),
         ];
         const { commands, menus } = packageJson.contributes;
@@ -88,6 +90,13 @@ suite("case commands", () => {
         assert.deepEqual(
             menus["changeCase.editorContext"].map((item) => item.command),
             expected,
+        );
+    });
+
+    test("the changeCase.cycle setting offers every case by name", () => {
+        assert.deepEqual(
+            packageJson.contributes.configuration.properties["changeCase.cycle"].items.enum,
+            caseCommands.map((command) => command.name),
         );
     });
 });

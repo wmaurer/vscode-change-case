@@ -67,6 +67,10 @@ suite("planChange", () => {
                 { anchor: 0, active: 7 },
                 { anchor: 8, active: 15 },
             ],
+            converted: [
+                { span: { start: 0, end: 7 }, reversed: false },
+                { span: { start: 8, end: 15 }, reversed: false },
+            ],
         });
     });
 
@@ -83,6 +87,7 @@ suite("planChange", () => {
         assert.deepEqual(plan, {
             edits: [{ span: { start: 0, end: 6 }, text: "foo_bar" }],
             selections: [{ anchor: 0, active: 7 }],
+            converted: [{ span: { start: 0, end: 7 }, reversed: false }],
         });
     });
 
@@ -111,10 +116,11 @@ suite("planChange", () => {
         assert.deepEqual(planChange("foo_bar", [{ anchor: 2, active: 2 }], snake, planOptions), {
             edits: [],
             selections: [{ anchor: 0, active: 7 }],
+            converted: [{ span: { start: 0, end: 7 }, reversed: false }],
         });
     });
 
-    test("puts the cursor at the end of each converted text when selectConverted is off", () => {
+    test("puts the cursor at the end of each converted text when selectConverted is off, and still reports the converted spans", () => {
         const plan = planChange(
             "fooBar bazQux",
             [
@@ -127,6 +133,10 @@ suite("planChange", () => {
         assert.deepEqual(plan.selections, [
             { anchor: 7, active: 7 },
             { anchor: 15, active: 15 },
+        ]);
+        assert.deepEqual(plan.converted, [
+            { span: { start: 0, end: 7 }, reversed: true },
+            { span: { start: 8, end: 15 }, reversed: false },
         ]);
     });
 });

@@ -1,7 +1,7 @@
 {
     "name": "change-case",
     "displayName": "change-case",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "description": "Quickly change the case (camelCase, CONSTANT_CASE, snake_case, etc) of the current selection or current word",
     "categories": [
         "Other"
@@ -28,6 +28,7 @@
         "compile": "pnpm run typecheck && pnpm run lint && node esbuild.ts",
         "package": "pnpm run typecheck && pnpm run lint && node esbuild.ts --production",
         "vsix": "vsce package --no-dependencies",
+        "publish:openvsx": "ovsx publish --no-dependencies",
         "watch": "pnpm run --parallel \"/^watch:/\"",
         "watch:esbuild": "node esbuild.ts --watch",
         "watch:tsc": "tsc -b --watch",
@@ -55,6 +56,7 @@
         "@vscode/test-electron": "^3.0.0",
         "@vscode/vsce": "^4.0.0",
         "esbuild": "^0.28.2",
+        "ovsx": "1.2.0",
         "oxfmt": "^0.72.0",
         "oxlint": "1.86.0",
         "oxlint-tsgolint": "7.0.2003",
@@ -70,6 +72,16 @@
             {
                 "command": "extension.changeCase.copy",
                 "title": "Copy As...",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.rename",
+                "title": "Rename Symbol As...",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.cycle",
+                "title": "Cycle",
                 "category": "Change Case"
             },
             {
@@ -199,6 +211,43 @@
                     "default": false,
                     "scope": "language-overridable",
                     "markdownDescription": "In `camel` and `pascal`, join a word that starts with a number without an underscore. For example, `camel` converts `first_name_1` to `firstName1`, not `firstName_1`. This is the `mergeAmbiguousCharacters` option of change-case."
+                },
+                "changeCase.cycle": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "camel",
+                            "constant",
+                            "dot",
+                            "kebab",
+                            "lower",
+                            "lowerFirst",
+                            "no",
+                            "param",
+                            "pascal",
+                            "pascalSnake",
+                            "path",
+                            "proseSentence",
+                            "proseTitle",
+                            "sentence",
+                            "snake",
+                            "sponge",
+                            "swap",
+                            "title",
+                            "upper",
+                            "upperFirst"
+                        ]
+                    },
+                    "default": [
+                        "camel",
+                        "snake",
+                        "constant",
+                        "pascal",
+                        "kebab"
+                    ],
+                    "scope": "language-overridable",
+                    "markdownDescription": "The cases that `Change Case: Cycle` goes through, in order. Each run converts the text to the next case in the list that gives a different result."
                 }
             }
         },
@@ -216,6 +265,14 @@
                 },
                 {
                     "command": "extension.changeCase.copy",
+                    "when": "changeCase.textEditorActive"
+                },
+                {
+                    "command": "extension.changeCase.rename",
+                    "when": "changeCase.textEditorActive && editorHasRenameProvider"
+                },
+                {
+                    "command": "extension.changeCase.cycle",
                     "when": "changeCase.textEditorActive"
                 },
                 {
@@ -314,6 +371,16 @@
                 {
                     "command": "extension.changeCase.copy",
                     "group": "1_pick"
+                },
+                {
+                    "command": "extension.changeCase.rename",
+                    "group": "1_pick",
+                    "when": "editorHasRenameProvider && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.cycle",
+                    "group": "1_pick",
+                    "when": "!editorReadonly"
                 },
                 {
                     "command": "extension.changeCase.camel",
