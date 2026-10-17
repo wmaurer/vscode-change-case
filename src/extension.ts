@@ -127,8 +127,16 @@ const runNamed = async (action: Action, name: string | vscode.Uri | undefined): 
     await action.run(editor, command);
 };
 
+// The Command Palette lists the commands only while this key is true. A `when` clause on
+// `editorLangId` is false in a notebook cell, but `activeTextEditor` is the cell editor there.
+const updateTextEditorActive = (editor: vscode.TextEditor | undefined): void => {
+    void vscode.commands.executeCommand("setContext", "changeCase.textEditorActive", editor !== undefined);
+};
+
 export const activate = (context: vscode.ExtensionContext): void => {
+    updateTextEditorActive(vscode.window.activeTextEditor);
     context.subscriptions.push(
+        vscode.window.onDidChangeActiveTextEditor(updateTextEditorActive),
         vscode.commands.registerCommand("extension.changeCase.commands", (name?: string | vscode.Uri) =>
             runNamed(convertAction, name),
         ),

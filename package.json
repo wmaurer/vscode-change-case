@@ -212,91 +212,91 @@
             "commandPalette": [
                 {
                     "command": "extension.changeCase.commands",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.copy",
-                    "when": "editorLangId"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.camel",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.constant",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.dot",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.kebab",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.lower",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.lowerFirst",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.no",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.param",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.pascal",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.pascalSnake",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.path",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.proseSentence",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.proseTitle",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.sentence",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.snake",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.sponge",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.swap",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.title",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.upper",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 },
                 {
                     "command": "extension.changeCase.upperFirst",
-                    "when": "editorLangId && !editorReadonly"
+                    "when": "changeCase.textEditorActive"
                 }
             ],
             "editor/context": [

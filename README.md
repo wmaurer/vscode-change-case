@@ -29,7 +29,7 @@ ext install wmaurer.change-case
 
 You can run the commands in three ways:
 
-- In the Command Palette (Ctrl/Cmd+Shift+P), type `Change Case`. The commands are listed when a text editor is active.
+- In the Command Palette (Ctrl/Cmd+Shift+P), type `Change Case`. The commands are listed when a text editor or a notebook cell is active.
 - Right-click in the editor and open the `Change Case` submenu.
 - Press a keyboard shortcut that you set. See [Keyboard shortcuts](#keyboard-shortcuts).
 

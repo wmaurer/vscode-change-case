@@ -40,6 +40,19 @@ const answerQuickPick = async (picking: Thenable<unknown>, command: string): Pro
     await done;
 };
 
+// Types the command into the Command Palette and accepts the first item until the document changes.
+// A command that the palette does not list leaves the document as it is.
+const runFromPalette = async (title: string, document: vscode.TextDocument): Promise<string> => {
+    const before = document.getText();
+    await vscode.commands.executeCommand("workbench.action.quickOpen", `>${title}`);
+    for (let attempt = 0; attempt < 50 && document.getText() === before; attempt += 1) {
+        await sleep(100);
+        await vscode.commands.executeCommand("workbench.action.acceptSelectedQuickOpenItem");
+    }
+    await vscode.commands.executeCommand("workbench.action.closeQuickOpen");
+    return document.getText();
+};
+
 const run = async (
     command: string,
     text: string,
@@ -172,12 +185,22 @@ suite("Change Case in the editor", () => {
 
     test("runs from the Command Palette when a text editor is active", async () => {
         const editor = await openEditor("foo_bar", [[2, 2]]);
-        await vscode.commands.executeCommand("workbench.action.quickOpen", ">Change Case: upper");
-        for (let attempt = 0; attempt < 50 && editor.document.getText() === "foo_bar"; attempt += 1) {
+        assert.equal(await runFromPalette("Change Case: upper", editor.document), "FOO_BAR");
+    });
+
+    test("runs from the Command Palette in a notebook cell", async () => {
+        const data = new vscode.NotebookData([
+            new vscode.NotebookCellData(vscode.NotebookCellKind.Code, "foo_bar", "python"),
+        ]);
+        const notebook = await vscode.workspace.openNotebookDocument("jupyter-notebook", data);
+        await vscode.window.showNotebookDocument(notebook);
+        await vscode.commands.executeCommand("notebook.focusTop");
+        await vscode.commands.executeCommand("notebook.cell.edit");
+        const cell = notebook.cellAt(0).document;
+        for (let attempt = 0; attempt < 50 && vscode.window.activeTextEditor?.document !== cell; attempt += 1) {
             await sleep(100);
-            await vscode.commands.executeCommand("workbench.action.acceptSelectedQuickOpenItem");
         }
-        assert.equal(editor.document.getText(), "FOO_BAR");
+        assert.equal(await runFromPalette("Change Case: upper", cell), "FOO_BAR");
     });
 
     test("copies the converted text at every cursor and leaves the document as it is", async () => {
@@ -186,7 +209,8 @@ suite("Change Case in the editor", () => {
             [9, 9],
         ]);
         await vscode.commands.executeCommand("extension.changeCase.copy", "snake");
-        assert.equal(await vscode.env.clipboard.readText(), "foo_bar\nbaz_qux");
+        const eol = editor.document.eol === vscode.EndOfLine.CRLF ? "\r\n" : "\n";
+        assert.equal(await vscode.env.clipboard.readText(), `foo_bar${eol}baz_qux`);
         assert.deepEqual(describe(editor), { text: "fooBar bazQux", selections: ["2-2", "9-9"] });
     });
 

@@ -5,8 +5,8 @@
 ### Added
 
 - `pascalSnake` converts to `Foo_Bar` ([#48](https://github.com/wmaurer/vscode-change-case/issues/48), [#22](https://github.com/wmaurer/vscode-change-case/issues/22)).
-- `proseTitle` converts to English title case with title-case. It keeps punctuation and does not capitalise small words such as a, of and the ([#18](https://github.com/wmaurer/vscode-change-case/issues/18), [#28](https://github.com/wmaurer/vscode-change-case/issues/28), [#20](https://github.com/wmaurer/vscode-change-case/issues/20), [#10](https://github.com/wmaurer/vscode-change-case/issues/10), [#29](https://github.com/wmaurer/vscode-change-case/issues/29)).
-- `proseSentence` capitalises the first letter of every sentence with title-case, and keeps punctuation ([#30](https://github.com/wmaurer/vscode-change-case/issues/30), [#45](https://github.com/wmaurer/vscode-change-case/issues/45)).
+- `proseTitle` converts to English title case with title-case. It keeps punctuation and does not capitalise small words such as a, of and the. It only changes letters to upper case, so for text such as `Developing A Software Renderer` or `TEST: SOMEthing`, run `lower` first ([#18](https://github.com/wmaurer/vscode-change-case/issues/18), [#28](https://github.com/wmaurer/vscode-change-case/issues/28), [#20](https://github.com/wmaurer/vscode-change-case/issues/20), [#10](https://github.com/wmaurer/vscode-change-case/issues/10), [#29](https://github.com/wmaurer/vscode-change-case/issues/29)).
+- `proseSentence` capitalises the first letter of every sentence with title-case, and keeps punctuation. Like every command, it converts one line at a time, so it also capitalises the first word of each line (part of [#30](https://github.com/wmaurer/vscode-change-case/issues/30) and [#45](https://github.com/wmaurer/vscode-change-case/issues/45)).
 - `sponge` converts to a random case for every character ([#41](https://github.com/wmaurer/vscode-change-case/issues/41)).
 - `Change Case: Copy As...` copies the converted text to the clipboard and leaves the document as it is. A keybinding can pass the name of a command, for example `"args": "snake"` ([#37](https://github.com/wmaurer/vscode-change-case/issues/37)).
 - A `Change Case` submenu in the editor context menu ([#21](https://github.com/wmaurer/vscode-change-case/issues/21)).
@@ -18,8 +18,8 @@
 
 - Requires VS Code 1.90 or later.
 - Commands are grouped under the `Change Case` category in the Command Palette, for example `Change Case: camel`. The command IDs are the same, so your keybindings keep working.
-- The Command Palette lists the commands only when a text editor is active, and the commands that change text only when the editor is not read-only ([#49](https://github.com/wmaurer/vscode-change-case/issues/49)).
-- The description of `constant` says "screaming snake case", so the quick pick finds it by that name ([#38](https://github.com/wmaurer/vscode-change-case/issues/38)).
+- The Command Palette lists the commands only when a text editor or a notebook cell is active ([#49](https://github.com/wmaurer/vscode-change-case/issues/49)).
+- The description of `constant` says "screaming snake case". The quick pick finds it by that name when it shows descriptions, which is when there is no preview ([#38](https://github.com/wmaurer/vscode-change-case/issues/38)).
 - The whitespace before and after the converted text is kept. For example, `camel` on a selected `foo bar` gives `fooBar`.
 - When you type in the quick pick, it also matches the description or the preview of each command.
 - Uses change-case 5. For 55 test inputs, the 16 commands of version 1.0.0 give the same output as with change-case 3, the version used before.

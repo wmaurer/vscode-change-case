@@ -55,10 +55,12 @@ suite("case commands", () => {
         );
     });
 
-    test("sponge changes only the case of each character", () => {
-        const text = "spongebob case, with punctuation!";
+    test("sponge changes only the case of each character, and uses both cases", () => {
+        const text = "spongebob case, with punctuation and enough letters that both cases appear!";
         const sponged = convert("sponge", text) ?? "";
         assert.equal(sponged.toLowerCase(), text);
+        assert.notEqual(sponged, text);
+        assert.notEqual(sponged, text.toUpperCase());
     });
 
     test("the change-case options from the settings reach the conversion", () => {
