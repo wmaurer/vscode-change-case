@@ -1,71 +1,73 @@
-# change-case README
+# Change Case Extension for Visual Studio Code
 
-This is the README for your extension "change-case". After writing up a brief description, we recommend including the following sections.
+A wrapper around [change-case](https://github.com/blakeembrey/change-case) for Visual Studio Code.
+Quickly change the case of the current selection or current word.
 
-## Features
+If only one word is selected, the `extension.changeCase.commands` command gives you a preview of each option:
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+![change-case-preview](https://cloud.githubusercontent.com/assets/2899448/10712456/3c5e29b6-7a9c-11e5-9ce4-7eb944889696.gif)
 
-For example if there is an image subfolder under your extension project workspace:
+`change-case` also works with multiple cursors:
 
-\!\[feature X\]\(images/feature-x.png\)
+![change-case-multi](https://cloud.githubusercontent.com/assets/2899448/10712454/1a9019e8-7a9c-11e5-8f06-91fd2d7e21bf.gif)
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+_Note:_ Please read the [documentation](https://code.visualstudio.com/docs/editor/codebasics#_multiple-selections-multicursor) on how to use multiple cursors in Visual Studio Code.
 
-## Requirements
+## Install
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+Launch VS Code Quick Open (Ctrl/Cmd+P), paste the following command, and press enter.
 
-## Extension Settings
+```
+ext install wmaurer.change-case
+```
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+## How it works
 
-For example:
+- With a selection, the command converts the selected text. A selection over several lines is converted one line at a time, and the line breaks and the indentation stay as they are.
+- With a cursor and no selection, the command converts the word at the cursor, and then selects it. A word here can contain `-`, `_`, `/` and `$`, so `some-value` converts as one word.
+- With several cursors or selections, the command converts each one, and one undo reverts them all.
 
-This extension contributes the following settings:
+## Commands
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+In the Command Palette, each command is listed as `Change Case: <name>`.
 
-## Known Issues
+- `extension.changeCase.commands`: List all Change Case commands, with a preview if only one word is selected
+- `extension.changeCase.camel`: Convert to a string with the separators denoted by having the next letter capitalised
+- `extension.changeCase.constant`: Convert to an upper case, underscore separated string
+- `extension.changeCase.dot`: Convert to a lower case, period separated string
+- `extension.changeCase.kebab`: Convert to a lower case, dash separated string (alias for param case)
+- `extension.changeCase.lower`: Convert to a string in lower case
+- `extension.changeCase.lowerFirst`: Convert to a string with the first character lower cased
+- `extension.changeCase.no`: Convert the string without any casing (lower case, space separated)
+- `extension.changeCase.param`: Convert to a lower case, dash separated string
+- `extension.changeCase.pascal`: Convert to a string denoted in the same fashion as camelCase, but with the first letter also capitalised
+- `extension.changeCase.path`: Convert to a lower case, slash separated string
+- `extension.changeCase.sentence`: Convert to a lower case, space separated string
+- `extension.changeCase.snake`: Convert to a lower case, underscore separated string
+- `extension.changeCase.swap`: Convert to a string with every character case reversed
+- `extension.changeCase.title`: Convert to a space separated string with the first character of every word upper cased
+- `extension.changeCase.upper`: Convert to a string in upper case
+- `extension.changeCase.upperFirst`: Convert to a string with the first character upper cased
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+## Settings
 
-## Release Notes
+- `changeCase.includeDotInCurrentWord` (default `false`): When a command runs on the word at the cursor, treat dots as part of the word. You can set it per language, for example `"[properties]": { "changeCase.includeDotInCurrentWord": true }`.
 
-Users appreciate release notes as you update your extension.
+## Development
 
-### 1.0.0
+Requires Node.js 22.18 or later and pnpm 10.
 
-Initial release of ...
+```bash
+pnpm install
+pnpm test        # builds the tests and runs them in a downloaded copy of VS Code
+pnpm typecheck   # tsc -b
+pnpm lint        # oxlint, type-aware
+pnpm fmt:check   # oxfmt
+pnpm vsix        # builds change-case-<version>.vsix
+```
 
-### 1.0.1
+Press F5 in VS Code to start an Extension Development Host with the extension loaded.
 
-Fixed issue #.
+## Support
 
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+[Create an issue](https://github.com/wmaurer/vscode-change-case/issues).
