@@ -16,3 +16,4 @@ node_modules/
 # Editor / OS noise
 .DS_Store
 .idea/
+.worktrees/

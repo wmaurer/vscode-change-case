@@ -56,5 +56,5 @@ export default defineConfig({
         "prose/plain-english-comments": "error",
     },
 
-    ignorePatterns: ["dist", "out", ".vscode-test", "scripts/repos.js", "tools/oxlint", ".repos"],
+    ignorePatterns: ["dist", "out", ".vscode-test", "scripts/repos.js", "tools/oxlint", ".repos", ".worktrees"],
 });

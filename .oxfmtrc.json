@@ -32,6 +32,8 @@
         "tools/oxlint/anti-slop/**",
         // A generated bundle from project-setup.
         "scripts/repos.js",
-        ".repos/**"
+        ".repos/**",
+        // Git worktrees of this repository, each with its own copy of the files.
+        ".worktrees/**"
     ]
 }
