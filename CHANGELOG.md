@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## 2.0.0 - 2026-10-17
 
 ### Added
 
@@ -20,7 +20,7 @@
 - Commands are grouped under the `Change Case` category in the Command Palette, for example `Change Case: camel`. The command IDs are the same, so your keybindings keep working.
 - The Command Palette lists the commands only when a text editor or a notebook cell is active ([#49](https://github.com/wmaurer/vscode-change-case/issues/49)).
 - The description of `constant` says "screaming snake case". The quick pick finds it by that name when it shows descriptions, which is when there is no preview ([#38](https://github.com/wmaurer/vscode-change-case/issues/38)).
-- The whitespace before and after the converted text is kept. For example, `camel` on a selected `foo bar` gives `fooBar`.
+- The whitespace before and after the converted text is kept. For example, `camel` on a selected `    foo bar` gives `    fooBar`. Before, it gave `fooBar`.
 - When you type in the quick pick, it also matches the description or the preview of each command.
 - Uses change-case 5. For 55 test inputs, the 16 commands of version 1.0.0 give the same output as with change-case 3, the version used before.
 

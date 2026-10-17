@@ -1,7 +1,7 @@
 {
     "name": "change-case",
     "displayName": "change-case",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "Quickly change the case (camelCase, CONSTANT_CASE, snake_case, etc) of the current selection or current word",
     "categories": [
         "Other"
