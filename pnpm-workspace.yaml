@@ -1,0 +1,13 @@
+# A single-package repo. This file carries pnpm settings only, so it declares no `packages`.
+onlyBuiltDependencies:
+    - esbuild
+
+# vsce-sign's install script fetches a signing binary. `vsce package` does not use it.
+ignoredBuiltDependencies:
+    - "@vscode/vsce-sign"
+
+# Carried over from generator-code's npm `overrides`: both pin patched releases of
+# transitive dependencies of mocha, which @vscode/test-cli brings in.
+overrides:
+    diff: ^8.0.4
+    serialize-javascript: ^7.0.6

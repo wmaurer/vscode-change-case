@@ -1,52 +1,171 @@
 {
-  "name": "change-case",
-  "displayName": "Change Case",
-  "description": "Quickly change the case (camelCase, CONSTANT_CASE, snake_case, etc) of the current selection or current word",
-  "version": "0.0.1",
-  "engines": {
-    "vscode": "^1.140.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [],
-  "main": "./dist/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "change-case.helloWorld",
-        "title": "Hello World"
-      }
-    ]
-  },
-  "scripts": {
-    "vscode:prepublish": "pnpm run package",
-    "compile": "pnpm run check-types && pnpm run lint && node esbuild.js",
-    "watch": "npm-run-all -p watch:*",
-    "watch:esbuild": "node esbuild.js --watch",
-    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-    "package": "pnpm run check-types && pnpm run lint && node esbuild.js --production",
-    "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
-    "check-types": "tsc --noEmit",
-    "lint": "eslint src",
-    "test": "vscode-test"
-  },
-  "devDependencies": {
-    "@types/vscode": "^1.140.0",
-    "@types/mocha": "^10.0.10",
-    "@types/node": "24.x",
-    "typescript-eslint": "^8.61.1",
-    "eslint": "^10.5.0",
-    "esbuild": "^0.28.1",
-    "npm-run-all": "^4.1.5",
-    "typescript": "^6.0.3",
-    "@vscode/test-cli": "^0.0.15",
-    "@vscode/test-electron": "^3.0.0"
-  },
-  "overrides": {
-    "diff": "^8.0.4",
-    "serialize-javascript": "^7.0.6"
-  }
+    "name": "change-case",
+    "displayName": "change-case",
+    "version": "1.0.0",
+    "description": "Quickly change the case (camelCase, CONSTANT_CASE, snake_case, etc) of the current selection or current word",
+    "categories": [
+        "Other"
+    ],
+    "bugs": {
+        "url": "https://github.com/wmaurer/vscode-change-case/issues"
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/wmaurer/vscode-change-case.git"
+    },
+    "publisher": "wmaurer",
+    "files": [
+        "dist/extension.cjs",
+        "images/change-case-icon.png",
+        "LICENSE.md",
+        "CHANGELOG.md"
+    ],
+    "type": "module",
+    "main": "./dist/extension.cjs",
+    "scripts": {
+        "vscode:prepublish": "pnpm run package",
+        "compile": "pnpm run typecheck && pnpm run lint && node esbuild.ts",
+        "package": "pnpm run typecheck && pnpm run lint && node esbuild.ts --production",
+        "vsix": "vsce package --no-dependencies",
+        "watch": "pnpm run --parallel \"/^watch:/\"",
+        "watch:esbuild": "node esbuild.ts --watch",
+        "watch:tsc": "tsc -b --watch",
+        "test": "node esbuild.ts && node esbuild.ts --tests && vscode-test",
+        "typecheck": "tsc -b",
+        "lint": "oxlint --no-error-on-unmatched-pattern --max-warnings=0",
+        "lint:backlog": "oxlint --no-error-on-unmatched-pattern",
+        "fmt": "oxfmt .",
+        "fmt:check": "oxfmt --check .",
+        "deps:fetch": "node scripts/repos.js deps fetch",
+        "deps:check": "node scripts/repos.js deps check",
+        "refs:fetch": "node scripts/repos.js refs fetch"
+    },
+    "dependencies": {
+        "change-case": "^5.4.4"
+    },
+    "devDependencies": {
+        "@oxlint/plugins": "1.86.0",
+        "@types/mocha": "^10.0.10",
+        "@types/node": "^26.6.2",
+        "@types/vscode": "1.90.0",
+        "@vscode/test-cli": "^0.0.15",
+        "@vscode/test-electron": "^3.0.0",
+        "@vscode/vsce": "^4.0.0",
+        "esbuild": "^0.28.2",
+        "oxfmt": "^0.72.0",
+        "oxlint": "1.86.0",
+        "oxlint-tsgolint": "7.0.2003",
+        "typescript": "^7.0.2"
+    },
+    "contributes": {
+        "commands": [
+            {
+                "command": "extension.changeCase.commands",
+                "title": "Commands",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.camel",
+                "title": "camel",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.constant",
+                "title": "constant",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.dot",
+                "title": "dot",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.kebab",
+                "title": "kebab",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.lower",
+                "title": "lower",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.lowerFirst",
+                "title": "lowerFirst",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.no",
+                "title": "no",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.param",
+                "title": "param",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.pascal",
+                "title": "pascal",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.path",
+                "title": "path",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.sentence",
+                "title": "sentence",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.snake",
+                "title": "snake",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.swap",
+                "title": "swap",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.title",
+                "title": "title",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.upper",
+                "title": "upper",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.upperFirst",
+                "title": "upperFirst",
+                "category": "Change Case"
+            }
+        ],
+        "configuration": {
+            "title": "Change Case",
+            "properties": {
+                "changeCase.includeDotInCurrentWord": {
+                    "type": "boolean",
+                    "default": false,
+                    "scope": "language-overridable",
+                    "description": "When a command runs on the word at the cursor, treat dots as part of the word."
+                }
+            }
+        }
+    },
+    "icon": "images/change-case-icon.png",
+    "galleryBanner": {
+        "color": "#1e1e1e",
+        "theme": "dark"
+    },
+    "engines": {
+        "node": ">=22.18",
+        "vscode": "^1.90.0"
+    },
+    "packageManager": "pnpm@10.33.0"
 }

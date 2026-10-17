@@ -1,0 +1,14 @@
+{
+    "extends": "../tsconfig.base.json",
+    "compilerOptions": {
+        // esbuild bundles the extension and the tests; tsc only checks them.
+        "noEmit": true,
+        // The extension host for VS Code 1.90 runs Node 20, which has ES2023.
+        "lib": ["ES2023"],
+        "module": "preserve",
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
+        "types": ["vscode", "mocha", "node"]
+    },
+    "include": ["."]
+}

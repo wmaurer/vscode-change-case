@@ -1,0 +1,10 @@
+{
+    // The project for the root's own TypeScript files. The root tsconfig.json is a solution file,
+    // so without this project these files would be type-checked by nothing.
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        "noEmit": true,
+        "types": ["node"]
+    },
+    "files": ["oxlint.config.ts", "esbuild.ts"]
+}

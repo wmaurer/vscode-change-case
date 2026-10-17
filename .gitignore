@@ -1,5 +1,18 @@
-out
-dist
-node_modules
-.vscode-test/
+# build output
+dist/
+out/
 *.vsix
+*.tsbuildinfo
+
+# dependencies
+node_modules/
+
+# @vscode/test-electron downloads VS Code here
+.vscode-test/
+
+# repos: upstream source cloned by scripts/repos.js
+.repos
+
+# Editor / OS noise
+.DS_Store
+.idea/

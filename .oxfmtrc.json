@@ -1,0 +1,37 @@
+{
+    "$schema": "./node_modules/oxfmt/configuration_schema.json",
+    "printWidth": 120,
+    "tabWidth": 4,
+    "semi": true,
+    "singleQuote": false,
+    "trailingComma": "all",
+    "arrowParens": "always",
+    "endOfLine": "lf",
+    "proseWrap": "preserve",
+    "embeddedLanguageFormatting": "off",
+    "sortImports": {
+        "newlinesBetween": true,
+        "groups": [
+            "value-builtin",
+            "value-external",
+            "value-internal",
+            ["value-parent", "value-sibling", "value-index"],
+            "type-import",
+            "unknown"
+        ]
+    },
+    "ignorePatterns": [
+        "dist",
+        "out",
+        ".vscode-test",
+        "pnpm-lock.yaml",
+        // pnpm's own docs write this file 2-space; tabWidth 4 would reindent it for no benefit.
+        "pnpm-workspace.yaml",
+        // Vendored upstream source; kept byte-identical so it can be diffed against upstream.
+        // See tools/oxlint/anti-slop/PROVENANCE.md.
+        "tools/oxlint/anti-slop/**",
+        // A generated bundle from project-setup.
+        "scripts/repos.js",
+        ".repos/**"
+    ]
+}
