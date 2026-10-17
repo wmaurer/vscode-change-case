@@ -3,7 +3,7 @@
 A wrapper around [change-case](https://github.com/blakeembrey/change-case) for Visual Studio Code.
 Quickly change the case of the current selection or current word.
 
-If only one word is selected, the `extension.changeCase.commands` command gives you a preview of each option:
+With one cursor, or one selection on one line, the `Change Case: Commands` quick pick shows a preview of each option:
 
 ![change-case-preview](https://cloud.githubusercontent.com/assets/2899448/10712456/3c5e29b6-7a9c-11e5-9ce4-7eb944889696.gif)
 
@@ -15,7 +15,7 @@ _Note:_ Please read the [documentation](https://code.visualstudio.com/docs/edito
 
 ## Install
 
-Launch VS Code Quick Open (Ctrl/Cmd+P), paste the following command, and press enter.
+Requires VS Code 1.90 or later. Launch VS Code Quick Open (Ctrl/Cmd+P), paste the following command, and press enter.
 
 ```
 ext install wmaurer.change-case
@@ -37,7 +37,7 @@ You can run the commands in three ways:
 
 In the Command Palette, each command is listed as `Change Case: <name>`.
 
-- `extension.changeCase.commands`: List all Change Case commands, with a preview if only one word is selected
+- `extension.changeCase.commands`: List all Change Case commands, with a preview of each conversion when there is one cursor or one selection on one line
 - `extension.changeCase.copy`: Copy the current word or selection to the clipboard in another case, and leave the document as it is. With several cursors, the texts are copied on separate lines.
 - `extension.changeCase.camel`: Convert to a string with the separators denoted by having the next letter capitalised
 - `extension.changeCase.constant`: Convert to an upper case, underscore separated string (screaming snake case)
@@ -60,7 +60,7 @@ In the Command Palette, each command is listed as `Change Case: <name>`.
 - `extension.changeCase.upper`: Convert to a string in upper case
 - `extension.changeCase.upperFirst`: Convert to a string with the first character upper cased
 
-`title`, `sentence` and `no` come from change-case, which removes punctuation. `proseTitle` and `proseSentence` come from [title-case](https://github.com/blakeembrey/change-case/tree/main/packages/title-case), which keeps it. They only change letters to upper case. So a word in capitals, such as `NASA`, stays as it is, and you can run `lower` first to change that. All commands convert one line at a time, so `proseSentence` also capitalises the first word of each line.
+`title`, `sentence` and `no` come from change-case, which removes punctuation. `proseTitle` and `proseSentence` come from [title-case](https://github.com/blakeembrey/change-case/tree/main/packages/title-case), which keeps it. They only change letters to upper case, so a word in capitals stays as it is. To change text such as `THE END`, run `lower` first. All commands convert one line at a time, so `proseSentence` also capitalises the first word of each line.
 
 ## Keyboard shortcuts
 
