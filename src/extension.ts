@@ -1,26 +1,76 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+import { caseCommands } from "./cases.ts";
+import { convertText, planChange, spanOf } from "./plan.ts";
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "change-case" is now active!');
+import type { CaseCommand } from "./cases.ts";
+import type { OffsetSelection } from "./plan.ts";
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('change-case.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Change Case!');
-	});
+const includeDotInCurrentWord = (document: vscode.TextDocument): boolean =>
+    vscode.workspace.getConfiguration("changeCase", document).get("includeDotInCurrentWord", false);
 
-	context.subscriptions.push(disposable);
-}
+const offsetSelection = (document: vscode.TextDocument, selection: vscode.Selection): OffsetSelection => ({
+    anchor: document.offsetAt(selection.anchor),
+    active: document.offsetAt(selection.active),
+});
 
-// This method is called when your extension is deactivated
-export function deactivate() {}
+const runCommand = async (command: CaseCommand): Promise<void> => {
+    const editor = vscode.window.activeTextEditor;
+    if (editor === undefined) return;
+    const { document } = editor;
+
+    const plan = planChange(
+        document.getText(),
+        editor.selections.map((selection) => offsetSelection(document, selection)),
+        command.convert,
+        includeDotInCurrentWord(document),
+    );
+
+    if (plan.edits.length > 0) {
+        const applied = await editor.edit((builder) => {
+            for (const { span, text } of plan.edits) {
+                builder.replace(new vscode.Range(document.positionAt(span.start), document.positionAt(span.end)), text);
+            }
+        });
+        if (!applied) return;
+    }
+
+    editor.selections = plan.selections.map(
+        ({ anchor, active }) => new vscode.Selection(document.positionAt(anchor), document.positionAt(active)),
+    );
+};
+
+// The quick pick shows each conversion of the text itself, but only when there is exactly one
+// piece of text on one line to convert. Otherwise it shows what each command does.
+const previewText = (editor: vscode.TextEditor): string | undefined => {
+    const [selection, ...others] = editor.selections;
+    if (selection === undefined || others.length > 0 || !selection.isSingleLine) return undefined;
+    const text = editor.document.getText();
+    const span = spanOf(text, offsetSelection(editor.document, selection), includeDotInCurrentWord(editor.document));
+    return span.start === span.end ? undefined : text.slice(span.start, span.end);
+};
+
+const pickCommand = async (): Promise<void> => {
+    const editor = vscode.window.activeTextEditor;
+    const preview = editor === undefined ? undefined : previewText(editor);
+    const items = caseCommands.map((command) => ({
+        label: command.name,
+        description:
+            preview === undefined ? command.description : `Convert to ${convertText(preview, command.convert)}`,
+        command,
+    }));
+    const picked = await vscode.window.showQuickPick(items, {
+        matchOnDescription: true,
+        placeHolder: "What do you want to do to the current word / selection(s)?",
+    });
+    if (picked !== undefined) await runCommand(picked.command);
+};
+
+export const activate = (context: vscode.ExtensionContext): void => {
+    context.subscriptions.push(
+        vscode.commands.registerCommand("extension.changeCase.commands", pickCommand),
+        ...caseCommands.map((command) =>
+            vscode.commands.registerCommand(`extension.changeCase.${command.name}`, () => runCommand(command)),
+        ),
+    );
+};
