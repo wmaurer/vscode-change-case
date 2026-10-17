@@ -27,8 +27,18 @@ const options: esbuild.BuildOptions = tests
           sourcesContent: false,
       };
 
+// The `$esbuild-watch` problem matcher in .vscode/tasks.json reads these two lines to know when a
+// rebuild starts and ends.
+const watchMarkers: esbuild.Plugin = {
+    name: "watch-markers",
+    setup: (build) => {
+        build.onStart(() => console.log("[watch] build started"));
+        build.onEnd(() => console.log("[watch] build finished"));
+    },
+};
+
 if (watch) {
-    const context = await esbuild.context(options);
+    const context = await esbuild.context({ ...options, plugins: [watchMarkers] });
     await context.watch();
 } else {
     await esbuild.build(options);

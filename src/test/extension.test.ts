@@ -26,6 +26,20 @@ const openEditor = async (text: string, selections: ReadonlyArray<readonly [numb
     return editor;
 };
 
+// The quick pick opens some time after its command starts, and nothing reports when. So the
+// command is sent again until the pick settles. Sending it with no quick pick open does nothing.
+const answerQuickPick = async (picking: Thenable<unknown>, command: string): Promise<void> => {
+    let settled = false;
+    const done = Promise.resolve(picking).then(() => {
+        settled = true;
+    });
+    for (let attempt = 0; attempt < 50 && !settled; attempt += 1) {
+        await sleep(100);
+        await vscode.commands.executeCommand(command);
+    }
+    await done;
+};
+
 const run = async (
     command: string,
     text: string,
@@ -101,6 +115,10 @@ suite("Change Case in the editor", () => {
         assert.deepEqual(await run("upper", "foo  bar", [[4, 4]]), { text: "foo  bar", selections: ["4-4"] });
     });
 
+    test("does nothing at a cursor on punctuation, such as a list bullet", async () => {
+        assert.deepEqual(await run("camel", "- item", [[1, 1]]), { text: "- item", selections: ["1-1"] });
+    });
+
     test("includes dots in the word at the cursor when changeCase.includeDotInCurrentWord is on", async () => {
         assert.deepEqual(await run("snake", "foo.barBaz", [[6, 6]]), {
             text: "foo.bar_baz",
@@ -119,21 +137,21 @@ suite("Change Case in the editor", () => {
         }
     });
 
-    test("runs the command picked from the quick pick", async () => {
+    test("runs the command picked from the quick pick, which lists camel first", async () => {
         const editor = await openEditor("foo_bar", [[2, 2]]);
-        const picking = vscode.commands.executeCommand("extension.changeCase.commands");
-        await sleep(500);
-        await vscode.commands.executeCommand("workbench.action.acceptSelectedQuickOpenItem");
-        await picking;
+        await answerQuickPick(
+            vscode.commands.executeCommand("extension.changeCase.commands"),
+            "workbench.action.acceptSelectedQuickOpenItem",
+        );
         assert.deepEqual(describe(editor), { text: "fooBar", selections: ["0-6"] });
     });
 
     test("does nothing when the quick pick is closed without a choice", async () => {
         const editor = await openEditor("foo_bar", [[2, 2]]);
-        const picking = vscode.commands.executeCommand("extension.changeCase.commands");
-        await sleep(500);
-        await vscode.commands.executeCommand("workbench.action.closeQuickOpen");
-        await picking;
+        await answerQuickPick(
+            vscode.commands.executeCommand("extension.changeCase.commands"),
+            "workbench.action.closeQuickOpen",
+        );
         assert.deepEqual(describe(editor), { text: "foo_bar", selections: ["2-2"] });
     });
 

@@ -6,7 +6,9 @@
 
 - Requires VS Code 1.90 or later.
 - Commands are grouped under the `Change Case` category in the Command Palette, for example `Change Case: camel`. The command IDs are the same, so your keybindings keep working.
-- Uses change-case 5. The output of every command is the same as with change-case 3, the version used before.
+- The whitespace before and after the converted text is kept. For example, `camel` on a selected `foo bar` gives `fooBar`.
+- When you type in the quick pick, it also matches the description or the preview of each command.
+- Uses change-case 5. For 55 test inputs, every command gives the same output as with change-case 3, the version used before.
 
 ### Fixed
 

@@ -23,6 +23,12 @@ suite("wordAt", () => {
         assert.deepEqual(wordAt("foo bar", 3, false), { start: 0, end: 3 });
     });
 
+    test("finds nothing in a run of punctuation", () => {
+        assert.deepEqual(wordAt("- item", 0, false), { start: 0, end: 0 });
+        assert.deepEqual(wordAt("a // b", 3, false), { start: 3, end: 3 });
+        assert.deepEqual(wordAt("a ... b", 3, true), { start: 3, end: 3 });
+    });
+
     test("finds nothing between two spaces", () => {
         assert.deepEqual(wordAt("foo  bar", 4, false), { start: 4, end: 4 });
     });

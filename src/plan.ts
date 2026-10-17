@@ -27,15 +27,19 @@ export interface Plan {
 const wordPattern = /[\p{L}\p{M}\p{N}_$/-]+/gu;
 const wordWithDotPattern = /[\p{L}\p{M}\p{N}_$/.-]+/gu;
 
+// A run of only `-`, `/`, `$` or `.` is punctuation, such as a list bullet or `//`. Most
+// conversions would delete it, so a word needs at least one letter or digit.
+const letterOrDigitPattern = /[\p{L}\p{N}]/u;
+
 /** The Change Case word that touches `offset`, or an empty span at `offset` when no word touches it. */
 export const wordAt = (text: string, offset: number, includeDot: boolean): Span => {
-    const lineStart = text.lastIndexOf("\n", offset - 1) + 1;
+    const lineStart = offset === 0 ? 0 : text.lastIndexOf("\n", offset - 1) + 1;
     const lineBreak = text.indexOf("\n", offset);
     const line = text.slice(lineStart, lineBreak === -1 ? text.length : lineBreak);
     for (const match of line.matchAll(includeDot ? wordWithDotPattern : wordPattern)) {
         const start = lineStart + match.index;
         const end = start + match[0].length;
-        if (start <= offset && offset <= end) return { start, end };
+        if (start <= offset && offset <= end && letterOrDigitPattern.test(match[0])) return { start, end };
     }
     return { start: offset, end: offset };
 };
@@ -47,11 +51,12 @@ export const spanOf = (text: string, selection: OffsetSelection, includeDot: boo
         : { start: Math.min(selection.anchor, selection.active), end: Math.max(selection.anchor, selection.active) };
 
 const lineBreakPattern = /(\r\n|\r|\n)/;
-const surroundingWhitespacePattern = /^(\s*)(.*?)(\s*)$/su;
-
 const convertLine = (line: string, convert: (text: string) => string): string => {
-    const [, leading = "", core = "", trailing = ""] = surroundingWhitespacePattern.exec(line) ?? [];
-    return core === "" ? line : `${leading}${convert(core)}${trailing}`;
+    const core = line.trim();
+    if (core === "") return line;
+    const leading = line.slice(0, line.length - line.trimStart().length);
+    const trailing = line.slice(line.trimEnd().length);
+    return `${leading}${convert(core)}${trailing}`;
 };
 
 /** Apply `convert` to each line of `text` on its own. Line breaks and the whitespace around each line are kept. */
