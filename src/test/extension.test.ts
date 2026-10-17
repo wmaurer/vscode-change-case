@@ -155,6 +155,67 @@ suite("Change Case in the editor", () => {
         assert.deepEqual(describe(editor), { text: "foo_bar", selections: ["2-2"] });
     });
 
+    test("runs the command named in the argument, as a keybinding can pass it", async () => {
+        const editor = await openEditor("fooBar", [[2, 2]]);
+        await vscode.commands.executeCommand("extension.changeCase.commands", "snake");
+        assert.deepEqual(describe(editor), { text: "foo_bar", selections: ["0-7"] });
+    });
+
+    test("opens the quick pick when a menu passes the document URI", async () => {
+        const editor = await openEditor("foo_bar", [[2, 2]]);
+        await answerQuickPick(
+            vscode.commands.executeCommand("extension.changeCase.commands", editor.document.uri),
+            "workbench.action.acceptSelectedQuickOpenItem",
+        );
+        assert.deepEqual(describe(editor), { text: "fooBar", selections: ["0-6"] });
+    });
+
+    test("runs from the Command Palette when a text editor is active", async () => {
+        const editor = await openEditor("foo_bar", [[2, 2]]);
+        await vscode.commands.executeCommand("workbench.action.quickOpen", ">Change Case: upper");
+        for (let attempt = 0; attempt < 50 && editor.document.getText() === "foo_bar"; attempt += 1) {
+            await sleep(100);
+            await vscode.commands.executeCommand("workbench.action.acceptSelectedQuickOpenItem");
+        }
+        assert.equal(editor.document.getText(), "FOO_BAR");
+    });
+
+    test("copies the converted text at every cursor and leaves the document as it is", async () => {
+        const editor = await openEditor("fooBar bazQux", [
+            [2, 2],
+            [9, 9],
+        ]);
+        await vscode.commands.executeCommand("extension.changeCase.copy", "snake");
+        assert.equal(await vscode.env.clipboard.readText(), "foo_bar\nbaz_qux");
+        assert.deepEqual(describe(editor), { text: "fooBar bazQux", selections: ["2-2", "9-9"] });
+    });
+
+    test("puts the cursor after the converted text when changeCase.selectConvertedText is off", async () => {
+        const configuration = vscode.workspace.getConfiguration("changeCase");
+        await configuration.update("selectConvertedText", false, vscode.ConfigurationTarget.Global);
+        try {
+            assert.deepEqual(await run("snake", "fooBar = 1", [[2, 2]]), {
+                text: "foo_bar = 1",
+                selections: ["7-7"],
+            });
+        } finally {
+            await configuration.update("selectConvertedText", undefined, vscode.ConfigurationTarget.Global);
+        }
+    });
+
+    test("passes changeCase.separateNumbers and changeCase.mergeAmbiguousCharacters to change-case", async () => {
+        const configuration = vscode.workspace.getConfiguration("changeCase");
+        await configuration.update("separateNumbers", true, vscode.ConfigurationTarget.Global);
+        await configuration.update("mergeAmbiguousCharacters", true, vscode.ConfigurationTarget.Global);
+        try {
+            assert.equal((await run("snake", "firstName1", [[2, 2]])).text, "first_name_1");
+            assert.equal((await run("camel", "first_name_1", [[2, 2]])).text, "firstName1");
+        } finally {
+            await configuration.update("separateNumbers", undefined, vscode.ConfigurationTarget.Global);
+            await configuration.update("mergeAmbiguousCharacters", undefined, vscode.ConfigurationTarget.Global);
+        }
+    });
+
     test("does nothing when no editor is open", async () => {
         await vscode.commands.executeCommand("extension.changeCase.camel");
         assert.equal(vscode.window.activeTextEditor, undefined);

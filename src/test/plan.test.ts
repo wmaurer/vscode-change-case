@@ -1,9 +1,11 @@
 import * as assert from "node:assert/strict";
 
 import { caseCommands } from "../cases.ts";
-import { convertText, planChange, wordAt } from "../plan.ts";
+import { convertText, convertedTexts, planChange, wordAt } from "../plan.ts";
 
-const snake = (text: string): string => caseCommands.find((command) => command.name === "snake")?.convert(text) ?? "";
+const snake = (text: string): string =>
+    caseCommands.find((command) => command.name === "snake")?.convert(text, {}) ?? "";
+const planOptions = { includeDot: false, selectConverted: true };
 
 suite("wordAt", () => {
     test("finds the word around the offset, with dashes, slashes, underscores and dollars", () => {
@@ -54,7 +56,7 @@ suite("planChange", () => {
                 { anchor: 9, active: 9 },
             ],
             snake,
-            false,
+            planOptions,
         );
         assert.deepEqual(plan, {
             edits: [
@@ -76,7 +78,7 @@ suite("planChange", () => {
                 { anchor: 5, active: 5 },
             ],
             snake,
-            false,
+            planOptions,
         );
         assert.deepEqual(plan, {
             edits: [{ span: { start: 0, end: 6 }, text: "foo_bar" }],
@@ -85,7 +87,7 @@ suite("planChange", () => {
     });
 
     test("keeps the direction of a backwards selection", () => {
-        const plan = planChange("fooBar", [{ anchor: 6, active: 0 }], snake, false);
+        const plan = planChange("fooBar", [{ anchor: 6, active: 0 }], snake, planOptions);
         assert.deepEqual(plan.selections, [{ anchor: 7, active: 0 }]);
     });
 
@@ -97,7 +99,7 @@ suite("planChange", () => {
                 { anchor: 7, active: 7 },
             ],
             snake,
-            false,
+            planOptions,
         );
         assert.deepEqual(plan.selections, [
             { anchor: 0, active: 7 },
@@ -106,9 +108,37 @@ suite("planChange", () => {
     });
 
     test("makes no edit when the text is already converted, but still selects it", () => {
-        assert.deepEqual(planChange("foo_bar", [{ anchor: 2, active: 2 }], snake, false), {
+        assert.deepEqual(planChange("foo_bar", [{ anchor: 2, active: 2 }], snake, planOptions), {
             edits: [],
             selections: [{ anchor: 0, active: 7 }],
         });
+    });
+
+    test("puts the cursor at the end of each converted text when selectConverted is off", () => {
+        const plan = planChange(
+            "fooBar bazQux",
+            [
+                { anchor: 6, active: 0 },
+                { anchor: 9, active: 9 },
+            ],
+            snake,
+            { includeDot: false, selectConverted: false },
+        );
+        assert.deepEqual(plan.selections, [
+            { anchor: 7, active: 7 },
+            { anchor: 15, active: 15 },
+        ]);
+    });
+});
+
+suite("convertedTexts", () => {
+    test("converts each selection and each word at a cursor once, in document order, and skips empty cursors", () => {
+        const selections = [
+            { anchor: 9, active: 9 },
+            { anchor: 0, active: 6 },
+            { anchor: 2, active: 2 },
+            { anchor: 14, active: 14 },
+        ];
+        assert.deepEqual(convertedTexts("fooBar bazQux  ", selections, snake, false), ["foo_bar", "baz_qux"]);
     });
 });

@@ -42,7 +42,9 @@
         "refs:fetch": "node scripts/repos.js refs fetch"
     },
     "dependencies": {
-        "change-case": "^5.4.4"
+        "change-case": "^5.4.4",
+        "sponge-case": "^2.0.3",
+        "title-case": "^4.3.2"
     },
     "devDependencies": {
         "@oxlint/plugins": "1.86.0",
@@ -63,6 +65,11 @@
             {
                 "command": "extension.changeCase.commands",
                 "title": "Commands",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.copy",
+                "title": "Copy As...",
                 "category": "Change Case"
             },
             {
@@ -111,8 +118,23 @@
                 "category": "Change Case"
             },
             {
+                "command": "extension.changeCase.pascalSnake",
+                "title": "pascalSnake",
+                "category": "Change Case"
+            },
+            {
                 "command": "extension.changeCase.path",
                 "title": "path",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.proseSentence",
+                "title": "proseSentence",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.proseTitle",
+                "title": "proseTitle",
                 "category": "Change Case"
             },
             {
@@ -123,6 +145,11 @@
             {
                 "command": "extension.changeCase.snake",
                 "title": "snake",
+                "category": "Change Case"
+            },
+            {
+                "command": "extension.changeCase.sponge",
+                "title": "sponge",
                 "category": "Change Case"
             },
             {
@@ -154,8 +181,241 @@
                     "default": false,
                     "scope": "language-overridable",
                     "description": "When a command runs on the word at the cursor, treat dots as part of the word."
+                },
+                "changeCase.selectConvertedText": {
+                    "type": "boolean",
+                    "default": true,
+                    "scope": "language-overridable",
+                    "description": "Select the converted text after a command. When off, the cursor goes to the end of the converted text."
+                },
+                "changeCase.separateNumbers": {
+                    "type": "boolean",
+                    "default": false,
+                    "scope": "language-overridable",
+                    "markdownDescription": "Treat numbers as separate words. For example, `snake` converts `firstName1` to `first_name_1`, but also `i18n` to `i_18_n`. This is the `splitSeparateNumbers` option of change-case."
+                },
+                "changeCase.mergeAmbiguousCharacters": {
+                    "type": "boolean",
+                    "default": false,
+                    "scope": "language-overridable",
+                    "markdownDescription": "In `camel` and `pascal`, join a word that starts with a number without an underscore. For example, `camel` converts `first_name_1` to `firstName1`, not `firstName_1`. This is the `mergeAmbiguousCharacters` option of change-case."
                 }
             }
+        },
+        "submenus": [
+            {
+                "id": "changeCase.editorContext",
+                "label": "Change Case"
+            }
+        ],
+        "menus": {
+            "commandPalette": [
+                {
+                    "command": "extension.changeCase.commands",
+                    "when": "editorLangId && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.copy",
+                    "when": "editorLangId"
+                },
+                {
+                    "command": "extension.changeCase.camel",
+                    "when": "editorLangId && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.constant",
+                    "when": "editorLangId && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.dot",
+                    "when": "editorLangId && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.kebab",
+                    "when": "editorLangId && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.lower",
+                    "when": "editorLangId && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.lowerFirst",
+                    "when": "editorLangId && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.no",
+                    "when": "editorLangId && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.param",
+                    "when": "editorLangId && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.pascal",
+                    "when": "editorLangId && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.pascalSnake",
+                    "when": "editorLangId && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.path",
+                    "when": "editorLangId && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.proseSentence",
+                    "when": "editorLangId && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.proseTitle",
+                    "when": "editorLangId && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.sentence",
+                    "when": "editorLangId && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.snake",
+                    "when": "editorLangId && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.sponge",
+                    "when": "editorLangId && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.swap",
+                    "when": "editorLangId && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.title",
+                    "when": "editorLangId && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.upper",
+                    "when": "editorLangId && !editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.upperFirst",
+                    "when": "editorLangId && !editorReadonly"
+                }
+            ],
+            "editor/context": [
+                {
+                    "submenu": "changeCase.editorContext",
+                    "group": "1_modification"
+                }
+            ],
+            "changeCase.editorContext": [
+                {
+                    "command": "extension.changeCase.commands",
+                    "group": "1_pick",
+                    "when": "!editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.copy",
+                    "group": "1_pick"
+                },
+                {
+                    "command": "extension.changeCase.camel",
+                    "group": "2_cases",
+                    "when": "!editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.constant",
+                    "group": "2_cases",
+                    "when": "!editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.dot",
+                    "group": "2_cases",
+                    "when": "!editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.kebab",
+                    "group": "2_cases",
+                    "when": "!editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.lower",
+                    "group": "2_cases",
+                    "when": "!editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.lowerFirst",
+                    "group": "2_cases",
+                    "when": "!editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.no",
+                    "group": "2_cases",
+                    "when": "!editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.param",
+                    "group": "2_cases",
+                    "when": "!editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.pascal",
+                    "group": "2_cases",
+                    "when": "!editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.pascalSnake",
+                    "group": "2_cases",
+                    "when": "!editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.path",
+                    "group": "2_cases",
+                    "when": "!editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.proseSentence",
+                    "group": "2_cases",
+                    "when": "!editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.proseTitle",
+                    "group": "2_cases",
+                    "when": "!editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.sentence",
+                    "group": "2_cases",
+                    "when": "!editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.snake",
+                    "group": "2_cases",
+                    "when": "!editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.sponge",
+                    "group": "2_cases",
+                    "when": "!editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.swap",
+                    "group": "2_cases",
+                    "when": "!editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.title",
+                    "group": "2_cases",
+                    "when": "!editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.upper",
+                    "group": "2_cases",
+                    "when": "!editorReadonly"
+                },
+                {
+                    "command": "extension.changeCase.upperFirst",
+                    "group": "2_cases",
+                    "when": "!editorReadonly"
+                }
+            ]
         }
     },
     "icon": "images/change-case-icon.png",

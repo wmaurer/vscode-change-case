@@ -6,16 +6,25 @@ import {
     kebabCase,
     noCase,
     pascalCase,
+    pascalSnakeCase,
     pathCase,
     sentenceCase,
     snakeCase,
 } from "change-case";
+import { spongeCase } from "sponge-case";
+import { titleCase } from "title-case";
+
+import type { PascalCaseOptions } from "change-case";
+
+/** The change-case options that the settings control. Commands that do not use change-case ignore them. */
+export type CaseOptions = Pick<PascalCaseOptions, "split" | "mergeAmbiguousCharacters">;
 
 /** One Change Case command: a name for the command palette and the quick pick, and the conversion it applies. */
 export interface CaseCommand {
     readonly name: string;
     readonly description: string;
-    readonly convert: (text: string) => string;
+    /** Converts one line of text, without the whitespace around it. */
+    readonly convert: (text: string, options: CaseOptions) => string;
 }
 
 const lowerCase = (text: string): string => text.toLowerCase();
@@ -36,7 +45,11 @@ export const caseCommands: ReadonlyArray<CaseCommand> = [
         description: "Convert to a string with the separators denoted by having the next letter capitalised",
         convert: camelCase,
     },
-    { name: "constant", description: "Convert to an upper case, underscore separated string", convert: constantCase },
+    {
+        name: "constant",
+        description: "Convert to an upper case, underscore separated string (screaming snake case)",
+        convert: constantCase,
+    },
     { name: "dot", description: "Convert to a lower case, period separated string", convert: dotCase },
     {
         name: "kebab",
@@ -61,9 +74,29 @@ export const caseCommands: ReadonlyArray<CaseCommand> = [
             "Convert to a string denoted in the same fashion as camelCase, but with the first letter also capitalised",
         convert: pascalCase,
     },
+    {
+        name: "pascalSnake",
+        description: "Convert to an underscore separated string with the first letter of every word capitalised",
+        convert: pascalSnakeCase,
+    },
     { name: "path", description: "Convert to a lower case, slash separated string", convert: pathCase },
+    {
+        name: "proseSentence",
+        description: "Capitalise the first letter of every sentence, and keep all other characters",
+        convert: (text) => titleCase(text, { sentenceCase: true }),
+    },
+    {
+        name: "proseTitle",
+        description: "Capitalise the words of an English title, but not small words such as a, of and the",
+        convert: (text) => titleCase(text),
+    },
     { name: "sentence", description: "Convert to a lower case, space separated string", convert: sentenceCase },
     { name: "snake", description: "Convert to a lower case, underscore separated string", convert: snakeCase },
+    {
+        name: "sponge",
+        description: "Convert to a string with a random case for every character",
+        convert: (text) => spongeCase(text),
+    },
     { name: "swap", description: "Convert to a string with every character case reversed", convert: swapCase },
     {
         name: "title",

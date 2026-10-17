@@ -27,13 +27,20 @@ ext install wmaurer.change-case
 - With a cursor and no selection, the command converts the word at the cursor, and then selects it. A word here can contain `-`, `_`, `/` and `$`, so `some-value` converts as one word.
 - With several cursors or selections, the command converts each one, and one undo reverts them all.
 
+You can run the commands in three ways:
+
+- In the Command Palette (Ctrl/Cmd+Shift+P), type `Change Case`. The commands are listed when a text editor is active.
+- Right-click in the editor and open the `Change Case` submenu.
+- Press a keyboard shortcut that you set. See [Keyboard shortcuts](#keyboard-shortcuts).
+
 ## Commands
 
 In the Command Palette, each command is listed as `Change Case: <name>`.
 
 - `extension.changeCase.commands`: List all Change Case commands, with a preview if only one word is selected
+- `extension.changeCase.copy`: Copy the current word or selection to the clipboard in another case, and leave the document as it is. With several cursors, the texts are copied on separate lines.
 - `extension.changeCase.camel`: Convert to a string with the separators denoted by having the next letter capitalised
-- `extension.changeCase.constant`: Convert to an upper case, underscore separated string
+- `extension.changeCase.constant`: Convert to an upper case, underscore separated string (screaming snake case)
 - `extension.changeCase.dot`: Convert to a lower case, period separated string
 - `extension.changeCase.kebab`: Convert to a lower case, dash separated string (alias for param case)
 - `extension.changeCase.lower`: Convert to a string in lower case
@@ -41,17 +48,42 @@ In the Command Palette, each command is listed as `Change Case: <name>`.
 - `extension.changeCase.no`: Convert the string without any casing (lower case, space separated)
 - `extension.changeCase.param`: Convert to a lower case, dash separated string
 - `extension.changeCase.pascal`: Convert to a string denoted in the same fashion as camelCase, but with the first letter also capitalised
+- `extension.changeCase.pascalSnake`: Convert to an underscore separated string with the first letter of every word capitalised, for example `Foo_Bar`
 - `extension.changeCase.path`: Convert to a lower case, slash separated string
+- `extension.changeCase.proseSentence`: Capitalise the first letter of every sentence, and keep all other characters
+- `extension.changeCase.proseTitle`: Capitalise the words of an English title, but not small words such as a, of and the. Punctuation is kept.
 - `extension.changeCase.sentence`: Convert to a lower case, space separated string
 - `extension.changeCase.snake`: Convert to a lower case, underscore separated string
+- `extension.changeCase.sponge`: Convert to a string with a random case for every character
 - `extension.changeCase.swap`: Convert to a string with every character case reversed
 - `extension.changeCase.title`: Convert to a space separated string with the first character of every word upper cased
 - `extension.changeCase.upper`: Convert to a string in upper case
 - `extension.changeCase.upperFirst`: Convert to a string with the first character upper cased
 
+`title`, `sentence` and `no` come from change-case, which removes punctuation. `proseTitle` and `proseSentence` come from [title-case](https://github.com/blakeembrey/change-case/tree/main/packages/title-case), which keeps it. They only change letters to upper case. So a word in capitals, such as `NASA`, stays as it is, and you can run `lower` first to change that. All commands convert one line at a time, so `proseSentence` also capitalises the first word of each line.
+
+## Keyboard shortcuts
+
+The extension adds no shortcuts. To add one, run `Preferences: Open Keyboard Shortcuts (JSON)` and add an entry such as:
+
+```json
+[
+    { "key": "ctrl+alt+c", "command": "extension.changeCase.camel", "when": "editorTextFocus" },
+    { "key": "ctrl+alt+k", "command": "extension.changeCase.commands", "when": "editorTextFocus" },
+    { "key": "ctrl+alt+s", "command": "extension.changeCase.copy", "args": "snake", "when": "editorTextFocus" }
+]
+```
+
+`extension.changeCase.commands` and `extension.changeCase.copy` take the name of a command as an optional argument, as in the last entry. Without it, they open the quick pick.
+
 ## Settings
 
-- `changeCase.includeDotInCurrentWord` (default `false`): When a command runs on the word at the cursor, treat dots as part of the word. You can set it per language, for example `"[properties]": { "changeCase.includeDotInCurrentWord": true }`.
+You can set each of these per language, for example `"[properties]": { "changeCase.includeDotInCurrentWord": true }`.
+
+- `changeCase.includeDotInCurrentWord` (default `false`): When a command runs on the word at the cursor, treat dots as part of the word.
+- `changeCase.selectConvertedText` (default `true`): Select the converted text after a command. When it is off, the cursor goes to the end of the converted text, so you can continue to type.
+- `changeCase.separateNumbers` (default `false`): Treat numbers as separate words. For example, `snake` converts `firstName1` to `first_name_1`, but also `i18n` to `i_18_n`.
+- `changeCase.mergeAmbiguousCharacters` (default `false`): In `camel` and `pascal`, join a word that starts with a number without an underscore. For example, `camel` converts `first_name_1` to `firstName1`, not `firstName_1`.
 
 ## Development
 

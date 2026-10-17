@@ -50,6 +50,8 @@ export const spanOf = (text: string, selection: OffsetSelection, includeDot: boo
         ? wordAt(text, selection.active, includeDot)
         : { start: Math.min(selection.anchor, selection.active), end: Math.max(selection.anchor, selection.active) };
 
+// change-case and title-case both remove line breaks, and change-case also removes the
+// whitespace around the text, so each line is converted on its own.
 const lineBreakPattern = /(\r\n|\r|\n)/;
 const convertLine = (line: string, convert: (text: string) => string): string => {
     const core = line.trim();
@@ -88,34 +90,60 @@ const mergeOverlapping = (targets: ReadonlyArray<Target>): ReadonlyArray<Target>
             return [...merged.slice(0, -1), { span: union, reversed: previous.reversed }];
         }, []);
 
-/** Plan how `convert` changes `text` at each of `selections`.
- *
- *  After the edits, each converted span is selected, in the direction of the selection it came from.
- *  A cursor that touches no word gets no edit and stays where it is. */
-export const planChange = (
+const mergedTargets = (
     text: string,
     selections: ReadonlyArray<OffsetSelection>,
-    convert: (text: string) => string,
     includeDot: boolean,
-): Plan => {
-    const targets = mergeOverlapping(
+): ReadonlyArray<Target> =>
+    mergeOverlapping(
         selections.map((selection) => ({
             span: spanOf(text, selection, includeDot),
             reversed: selection.anchor > selection.active,
         })),
     );
+
+/** How a command finds its text and what it selects afterwards. These come from the settings. */
+export interface PlanOptions {
+    /** Treat dots as part of the word at a cursor. */
+    readonly includeDot: boolean;
+    /** Select each converted text. When `false`, the cursor goes to the end of each converted text. */
+    readonly selectConverted: boolean;
+}
+
+/** Plan how `convert`, applied to each line, changes `text` at each of `selections`.
+ *
+ *  After the edits, each converted span is selected in the direction of the selection it came from,
+ *  or the cursor is at its end. A cursor that touches no word gets no edit and stays where it is. */
+export const planChange = (
+    text: string,
+    selections: ReadonlyArray<OffsetSelection>,
+    convert: (text: string) => string,
+    options: PlanOptions,
+): Plan => {
     const edits: Array<Edit> = [];
     const newSelections: Array<OffsetSelection> = [];
     // Each edit moves the text after it by the change in length, so later spans shift by the sum so far.
     let shift = 0;
-    for (const { span, reversed } of targets) {
+    for (const { span, reversed } of mergedTargets(text, selections, options.includeDot)) {
         const original = text.slice(span.start, span.end);
         const replacement = convertText(original, convert);
         const start = span.start + shift;
         const end = start + replacement.length;
         if (replacement !== original) edits.push({ span, text: replacement });
-        newSelections.push(reversed ? { anchor: end, active: start } : { anchor: start, active: end });
+        if (!options.selectConverted) newSelections.push({ anchor: end, active: end });
+        else newSelections.push(reversed ? { anchor: end, active: start } : { anchor: start, active: end });
         shift += replacement.length - original.length;
     }
     return { edits, selections: newSelections };
 };
+
+/** The converted text at each of `selections`, in document order. Cursors that touch no word give nothing. */
+export const convertedTexts = (
+    text: string,
+    selections: ReadonlyArray<OffsetSelection>,
+    convert: (text: string) => string,
+    includeDot: boolean,
+): ReadonlyArray<string> =>
+    mergedTargets(text, selections, includeDot)
+        .filter(({ span }) => span.start < span.end)
+        .map(({ span }) => convertText(text.slice(span.start, span.end), convert));
