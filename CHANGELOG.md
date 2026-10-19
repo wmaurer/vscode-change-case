@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.1.1 - Unreleased
+
+### Fixed
+
+- The Command Palette lists the commands again. The extension now starts when VS Code has started, so that it can tell the Command Palette that a text editor is active ([#54](https://github.com/wmaurer/vscode-change-case/issues/54)).
+
 ## 2.1.0 - 2026-10-17
 
 ### Added

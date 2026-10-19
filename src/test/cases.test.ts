@@ -93,6 +93,16 @@ suite("case commands", () => {
         );
     });
 
+    // A command activates the extension only when it runs. A palette entry that is hidden
+    // until the extension sets its context key could never run, so it would never show.
+    test("the extension activates at startup, so the Command Palette context key is set", () => {
+        const usesOwnContextKey = packageJson.contributes.menus.commandPalette.some((item) =>
+            item.when.includes("changeCase."),
+        );
+        assert.ok(usesOwnContextKey);
+        assert.deepEqual(packageJson.activationEvents, ["onStartupFinished"]);
+    });
+
     test("the changeCase.cycle setting offers every case by name", () => {
         assert.deepEqual(
             packageJson.contributes.configuration.properties["changeCase.cycle"].items.enum,

@@ -485,6 +485,9 @@
             ]
         }
     },
+    "activationEvents": [
+        "onStartupFinished"
+    ],
     "icon": "images/change-case-icon.png",
     "galleryBanner": {
         "color": "#1e1e1e",
